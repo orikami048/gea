@@ -241,13 +241,41 @@ body {
 }
 
 .story-desc {
-  font-size: 13px;
-  line-height: 1.7;
+  font-size: 13.5px;
+  line-height: 1.8;
   color: #e2e8f0;
   margin-bottom: 16px;
+  text-align: justify;
 }
 
 .story-desc b { color: #38bdf8; }
+
+.novel-p {
+  margin-bottom: 12px;
+  text-indent: 2em;
+  line-height: 1.85;
+  letter-spacing: 0.3px;
+  color: #e2e8f0;
+}
+
+.novel-dialogue {
+  color: #fde047;
+  font-weight: 600;
+  background: rgba(253, 224, 71, 0.08);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.badge-novel-words {
+  background: #312e81;
+  color: #c7d2fe;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid #4338ca;
+  margin-left: 6px;
+}
 
 .choices-list {
   display: flex;

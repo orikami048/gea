@@ -266,6 +266,19 @@ class FullLifeGameEngine {
     }
   }
 
+  // 格式化长篇小说深度排版（段落缩进与对话高亮）
+  formatNovelNarrative(text) {
+    if (!text) return '';
+    const paragraphs = text.split(/\n\s*\n/);
+    return paragraphs.map(p => {
+      let clean = p.trim();
+      if (!clean) return '';
+      clean = clean.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+      clean = clean.replace(/(“[^”]+”)/g, '<span class="novel-dialogue">$1</span>');
+      return `<p class="novel-p">${clean}</p>`;
+    }).join('');
+  }
+
   // --- 视图分发渲染 ---
   renderCurrentTab() {
     const viewContainer = document.getElementById('tab-content-area');
@@ -309,10 +322,11 @@ class FullLifeGameEngine {
           <div class="story-meta">
             <span class="badge-scene">${node.scene}</span>
             <span class="badge-date">${node.ageRange} · ${this.currentYear}年</span>
+            <span class="badge-novel-words">📖 长篇原著 · 约 ${node.narrative.length} 字</span>
           </div>
           <h2 class="story-title">${node.title}</h2>
           <div class="story-icon">${node.image || '🎟️'}</div>
-          <div class="story-desc">${node.narrative.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</div>
+          <div class="story-desc novel-prose-body">${this.formatNovelNarrative(node.narrative)}</div>
           <div class="choices-list" id="story-choices-box"></div>
         </div>
       `;
