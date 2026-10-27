@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { detectGameEngine } from '../src/adapters/engineDetector.js';
 import { extractGameAssets } from '../src/adapters/assetExtractor.js';
 import { exportToCocosProject } from '../src/adapters/cocosExporter.js';
+import { exportToThreeJsProject } from '../src/adapters/threeExporter.js';
 import { startMcpServer } from '../src/server.js';
 
 const args = process.argv.slice(2);
@@ -19,6 +20,7 @@ Usage:
   gea inspect <targetDir>                     Detect game engine (Cocos/Unity/Phaser/etc.)
   gea extract <targetDir> -o <outputDir>      Extract & classify textures, audios, atlases
   gea port <assetsDir> -o <cocosProjectDir>   Port extracted assets into a Cocos Creator 3.x project
+  gea port-three <assetsDir> -o <threeDir>    Port extracted assets into a Three.js + Vite WebGL project
   gea mcp                                     Launch Model Context Protocol (MCP) stdio server
 
 Examples:
@@ -68,6 +70,20 @@ Examples:
     const manifest = await extractGameAssets(absSrc, absSrc);
     const res = await exportToCocosProject(manifest, {}, absOut);
     console.log(`🎉 Cocos Creator project created successfully at: ${res.targetDirectory}`);
+    return;
+  }
+
+  if (command === 'port-three') {
+    const target = args[1] || '.';
+    const outIdx = args.indexOf('-o');
+    const out = outIdx !== -1 && args[outIdx + 1] ? args[outIdx + 1] : './ThreeProject';
+    const absSrc = path.resolve(process.cwd(), target);
+    const absOut = path.resolve(process.cwd(), out);
+
+    console.log(`🚀 Porting assets to Three.js project at ${absOut}...`);
+    const manifest = await extractGameAssets(absSrc, absSrc);
+    const res = await exportToThreeJsProject(manifest, {}, absOut);
+    console.log(`🎉 Three.js project created successfully at: ${res.targetDirectory}`);
     return;
   }
 

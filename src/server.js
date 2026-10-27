@@ -2,6 +2,7 @@ import readline from 'readline';
 import { detectGameEngine } from './adapters/engineDetector.js';
 import { extractGameAssets } from './adapters/assetExtractor.js';
 import { exportToCocosProject } from './adapters/cocosExporter.js';
+import { exportToThreeJsProject } from './adapters/threeExporter.js';
 
 /**
  * GEA Model Context Protocol (MCP) stdio Server
@@ -62,6 +63,24 @@ const TOOLS = [
       required: ['assetSourceDir', 'cocosProjectDir']
     }
   }
+  {
+    name: 'gea_export_to_three',
+    description: 'Directly port and reconstruct extracted game assets into a modern, ready-to-run Three.js + Vite WebGL 3D game project.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        assetSourceDir: {
+          type: 'string',
+          description: 'Directory containing extracted textures, 3D models, and audio.'
+        },
+        threeProjectDir: {
+          type: 'string',
+          description: 'Target directory for the newly generated Three.js project.'
+        }
+      },
+      required: ['assetSourceDir', 'threeProjectDir']
+    }
+  }
 ];
 
 export function startMcpServer() {
@@ -96,6 +115,9 @@ export function startMcpServer() {
         } else if (name === 'gea_export_to_cocos') {
           const assets = await extractGameAssets(args.assetSourceDir, args.assetSourceDir);
           result = await exportToCocosProject(assets, args.configData || {}, args.cocosProjectDir);
+        } else if (name === 'gea_export_to_three') {
+          const assets = await extractGameAssets(args.assetSourceDir, args.assetSourceDir);
+          result = await exportToThreeJsProject(assets, args.configData || {}, args.threeProjectDir);
         } else {
           throw new Error(`Unknown tool: ${name}`);
         }

@@ -26,6 +26,11 @@ const ENGINE_FINGERPRINTS = [
     markers: ['PIXI.Application', 'pc.Application']
   },
   {
+    name: 'Three.js (3D WebGL)',
+    type: 'threejs',
+    markers: ['THREE.', 'three.min.js', 'three.module.js', 'GLTFLoader', 'MeshStandardMaterial', 'PerspectiveCamera']
+  },
+  {
     name: 'Pure Web Canvas / Custom H5',
     type: 'custom_canvas',
     markers: ['getContext("2d")', 'requestAnimationFrame']

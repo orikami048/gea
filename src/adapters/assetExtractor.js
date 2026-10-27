@@ -2,10 +2,10 @@ import fs from 'fs';
 import path from 'path';
 
 const ASSET_EXTENSIONS = {
-  texture: ['.png', '.jpg', '.jpeg', '.webp', '.svg'],
+  texture: ['.png', '.jpg', '.jpeg', '.webp', '.svg', '.hdr', '.exr'],
   audio: ['.mp3', '.ogg', '.wav', '.m4a'],
   atlas: ['.atlas', '.plist', '.fnt'],
-  model: ['.json', '.gltf', '.glb']
+  model: ['.json', '.gltf', '.glb', '.bin', '.obj', '.fbx']
 };
 
 function getAllFiles(dirPath, arrayOfFiles = []) {
