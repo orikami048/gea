@@ -151,6 +151,14 @@ class FullLifeGameEngine {
       document.getElementById('modal-market-news').classList.add('hidden');
     });
 
+    // 关闭命运时间线分支树弹窗
+    const btnCloseTree = document.getElementById('btn-close-timeline-tree');
+    if (btnCloseTree) {
+      btnCloseTree.addEventListener('click', () => {
+        document.getElementById('modal-timeline-tree').classList.add('hidden');
+      });
+    }
+
     // 美联储救市对冲广告
     document.getElementById('btn-bailout-ad').addEventListener('click', () => {
       if (this.currentPendingBearNews) {
@@ -247,6 +255,57 @@ class FullLifeGameEngine {
   // 1. 剧情视图渲染
   renderStoryView() {
     const view = document.getElementById('tab-content-area');
+
+    // ── 剧本一: 多时间线树状分支图谱架构 (100% 对照原版《奖来7000万》10大时代架构) ──
+    if (this.activeScenario === 'lottery' && window.timelineDirector) {
+      const node = window.timelineDirector.getCurrentNode();
+      if (!node) return;
+
+      view.innerHTML = `
+        <div class="scenario-switch-bar">
+          <button class="sc-pill active" data-sc="lottery">🎟️ 剧本一: 中彩票1亿 (树状多时间线)</button>
+          <button class="sc-pill" data-sc="black_gold">🏴‍☠️ 剧本二: 黑金教皇</button>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <button id="btn-open-timeline-tree" class="btn-tree-pill">
+            🌲 当前时间线: <b>${window.timelineDirector.activeTimelineName}</b> (点击展开决策树 ➔)
+          </button>
+        </div>
+
+        <div class="story-panel">
+          <div class="story-meta">
+            <span class="badge-scene">${node.scene}</span>
+            <span class="badge-date">${node.ageRange} · ${this.currentYear}年</span>
+          </div>
+          <h2 class="story-title">${node.title}</h2>
+          <div class="story-icon">${node.image || '🎟️'}</div>
+          <div class="story-desc">${node.narrative.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')}</div>
+          <div class="choices-list" id="story-choices-box"></div>
+        </div>
+      `;
+
+      this.bindScenarioSwitchButtons(view);
+
+      const treeBtn = document.getElementById('btn-open-timeline-tree');
+      if (treeBtn) {
+        treeBtn.addEventListener('click', () => this.showTimelineTreeModal());
+      }
+
+      const box = document.getElementById('story-choices-box');
+      node.choices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-item-btn';
+        btn.innerHTML = `
+          <div class="choice-title">${choice.text}</div>
+          <div class="choice-delta">${choice.impact.money > 0 ? `+$${choice.impact.money.toLocaleString()}` : (choice.impact.money < 0 ? `-$${Math.abs(choice.impact.money).toLocaleString()}` : '')}</div>
+        `;
+        btn.addEventListener('click', () => this.handleMakeTimelineChoice(node, choice));
+        box.appendChild(btn);
+      });
+      return;
+    }
+
     const chapters = this.getCurrentScenarioChapters();
 
     if (this.storyIndex >= chapters.length) {
@@ -298,6 +357,92 @@ class FullLifeGameEngine {
       btn.addEventListener('click', () => this.handleMakeStoryChoice(choice));
       box.appendChild(btn);
     });
+  }
+
+  // 处理时间线树状图谱的决策选择
+  handleMakeTimelineChoice(node, choice) {
+    this.createBackupSnapshot();
+
+    // 资金与数值结算
+    this.liquidCash += choice.impact.money || 0;
+    if (choice.impact.fame) this.reputation = Math.max(0, Math.min(100, this.reputation + choice.impact.fame));
+    if (choice.impact.karma) this.credit = Math.max(0, Math.min(100, this.credit + choice.impact.karma));
+    if (choice.impact.romance) this.romance = Math.max(0, Math.min(100, this.romance + choice.impact.romance));
+    if (choice.impact.wisdom) this.wisdom = Math.max(0, Math.min(100, this.wisdom + choice.impact.wisdom));
+    if (choice.impact.health) this.health = Math.max(0, Math.min(100, this.health + choice.impact.health));
+
+    // 记录人生历史
+    this.lifeEventsLog.push({
+      year: this.currentYear,
+      age: this.currentAge,
+      title: `${node.title} (${window.timelineDirector.activeTimelineName})`,
+      choice: choice.text,
+      feedback: choice.feedback
+    });
+
+    if (choice.setFact) {
+      Object.assign(this.facts, choice.setFact);
+    }
+
+    this.updateHUD();
+
+    // 弹出决策结果反馈
+    document.getElementById('feedback-text').innerText = choice.feedback;
+    document.getElementById('modal-feedback').classList.remove('hidden');
+
+    // 开启悔棋广告入口
+    document.getElementById('btn-ad-rewind').classList.remove('hidden');
+
+    // 发生时间线跃迁
+    if (choice.targetNodeId) {
+      window.timelineDirector.transitionTo(choice.targetNodeId);
+    } else {
+      setTimeout(() => this.showLifeBiographyEndgame(), 1200);
+    }
+
+    // 第一局三卡兑现
+    if (node.id === 'CH01_WIN' && !this.facts.first_treat_done) {
+      setTimeout(() => this.triggerFirstTreatPackage(), 800);
+    }
+  }
+
+  // 展开时间线分支树可视化弹窗
+  showTimelineTreeModal() {
+    const modal = document.getElementById('modal-timeline-tree');
+    document.getElementById('tree-active-name').innerText = window.timelineDirector.activeTimelineName;
+
+    const container = document.getElementById('timeline-tree-container');
+    container.innerHTML = '';
+
+    const nodesData = window.timelineDirector.getGraphVisualizationData();
+    nodesData.forEach(item => {
+      const card = document.createElement('div');
+      let statusClass = 'locked';
+      let badgeText = '🔒 平行世界未走过的分支';
+
+      if (item.isCurrent) {
+        statusClass = 'current';
+        badgeText = '🟢 当前所在命运时间线';
+      } else if (item.isUnlocked) {
+        statusClass = 'unlocked';
+        badgeText = '✅ 已经历的历史节点';
+      }
+
+      card.className = `tree-node-card ${statusClass}`;
+      card.innerHTML = `
+        <span class="node-timeline-badge ${statusClass}">${badgeText}</span>
+        <div class="node-title-row">
+          <span>${item.chapter} · ${item.title}</span>
+          <span style="color:#94a3b8; font-size:11px;">${item.age}</span>
+        </div>
+        <div style="font-size:11px; color:#38bdf8; margin-top:4px;">
+          所属时间线: <b>${item.timeline}</b>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    modal.classList.remove('hidden');
   }
 
   // 绑定剧本切换器按钮事件
@@ -997,6 +1142,9 @@ class FullLifeGameEngine {
     this.investments = [];
     if (window.stockMarket) {
       window.stockMarket = new StockMarketSystem();
+    }
+    if (window.timelineDirector) {
+      window.timelineDirector.reset();
     }
     this.storyIndex = 0;
     this.lifeEventsLog = [];
