@@ -212,6 +212,72 @@ const MALL_ITEMS = [
     descZh: '名媛社交圈的通行证。送出它的那一刻，所有防线迎刃而解。',
     descEn: 'The holy grail of haute couture. Opens doors in high-society salons instantly.',
     buff: { romance: 10, reputation: 8 }
+  },
+
+  // ── 5. 跨国剧情与金融避险特权专属 (Story-Linked Strategic Assets) ─────
+  {
+    id: 'lux_swiss_vault',
+    category: 'lux',
+    nameZh: '瑞士私人地下避税物理金库',
+    nameEn: 'Swiss Deep Granite Physical Vault',
+    price: 15000000,
+    cls: 'collectible',
+    icon: '🏛️',
+    specs: [
+      { kZh: '深度', kEn: 'Depth', vZh: '阿尔卑斯花岗岩地下 200米', vEn: '200m Deep Underground' },
+      { kZh: '法权', kEn: 'Jurisdiction', vZh: '瑞士主权永久中立 保密法保护', vEn: 'Strict Swiss Secrecy' }
+    ],
+    descZh: '【剧情特权】不受任何外国司法管辖区冻结。在黑天鹅金融风暴或 P2P 崩盘中可触发无损避风特权！',
+    descEn: 'Impervious to cross-border freezes. Unlocks unique crisis protection in historical events.',
+    buff: { credit: 30, wisdom: 20, reputation: 15 }
+  },
+  {
+    id: 'ai_quantum_cluster',
+    category: 'lux',
+    nameZh: '硅谷万卡量子AI超算中心',
+    nameEn: 'Silicon Valley AI Quantum Cluster',
+    price: 32000000,
+    cls: 'market',
+    icon: '🤖',
+    specs: [
+      { kZh: '算力', kEn: 'Compute', vZh: '10,000 张顶规液冷量子芯片', vEn: '10,000 Liquid-Cooled GPUs' },
+      { kZh: '电力', kEn: 'Power', vZh: '自建独立核聚变微电网供应', vEn: 'Dedicated Microgrid Power' }
+    ],
+    descZh: '【剧情特权】拥有全球顶流算力基础设施！在 AGI 奇点或科技暴涨剧情中，触发翻倍超额分红！',
+    descEn: 'The lifeblood of artificial intelligence. Unlocks massive returns during tech revolutions.',
+    buff: { wisdom: 35, reputation: 25, credit: 20 }
+  },
+  {
+    id: 'security_executive_force',
+    category: 'lux',
+    nameZh: '前特种部队私人战术安保军团',
+    nameEn: 'Executive Defense Contractor Squad',
+    price: 4500000,
+    cls: 'collectible',
+    icon: '🛡️',
+    specs: [
+      { kZh: '编制', kEn: 'Personnel', vZh: '12名顶尖反恐特种兵 24小时轮值', vEn: '12 Tier-1 Operators' },
+      { kZh: '防务', kEn: 'Equipment', vZh: '防弹装甲车队·无人机电子反制', vEn: 'Armored Fleet & Counter-UAV' }
+    ],
+    descZh: '【剧情特权】彻底规避任何黑帮绑架、催收堵门或恶性治安事件，健康与威慑力拉满！',
+    descEn: 'Absolute personal security. Neutralizes extortion, strikes, and physical threats entirely.',
+    buff: { health: 25, credit: 15, reputation: 10 }
+  },
+  {
+    id: 'island_caribbean_retreat',
+    category: 'house',
+    nameZh: '巴哈马独立离岸免税海岛',
+    nameEn: 'Bahamas Sovereign Private Atoll',
+    price: 48000000,
+    cls: 'market',
+    icon: '🏝️',
+    specs: [
+      { kZh: '领地', kEn: 'Territory', vZh: '500英亩独立环礁 自主防务', vEn: '500-Acre Private Sovereign Atoll' },
+      { kZh: '税率', kEn: 'Taxes', vZh: '0% 离岸所得税·独立国际海港', vEn: '0% Offshore Corporate Tax' }
+    ],
+    descZh: '【剧情特权】建立属于自己的独立离岸主权王国，在政局动荡时提供终极避难所与离岸信托庇护。',
+    descEn: 'Your personal micro-nation. The ultimate sanctuary from geopolitical and financial collapse.',
+    buff: { reputation: 40, credit: 35, romance: 25, health: 15 }
   }
 ];
 

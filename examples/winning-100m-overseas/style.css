@@ -870,3 +870,91 @@ body {
   margin: 12px 0;
   font-size: 12px;
 }
+
+/* 历史与魔改黑天鹅事件弹窗 */
+.historical-modal {
+  border: 2px solid #f59e0b !important;
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.3) !important;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.hist-badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.hist-year-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #facc15;
+  background: #1e1b4b;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid #4338ca;
+}
+
+.hist-tag {
+  font-size: 10px;
+  color: #f87171;
+  font-weight: bold;
+}
+
+.hist-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hist-icon {
+  font-size: 24px;
+}
+
+.hist-choices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hist-choice-btn {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #f8fafc;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+
+.hist-choice-btn:hover {
+  background: #334155;
+  border-color: #64748b;
+}
+
+/* 商城特权专属选项 (已拥有) */
+.hist-choice-btn.privilege {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(30, 27, 75, 0.8));
+  border: 1.5px solid #eab308;
+  box-shadow: 0 0 12px rgba(234, 179, 8, 0.25);
+  color: #fef08a;
+}
+
+.hist-choice-btn.privilege:hover {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(49, 46, 129, 0.9));
+  border-color: #facc15;
+}
+
+/* 商城未拥有锁定选项 */
+.hist-choice-btn.locked {
+  background: #0f172a;
+  border: 1px dashed #475569;
+  color: #64748b;
+  cursor: not-allowed;
+  opacity: 0.65;
+}

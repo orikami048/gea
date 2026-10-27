@@ -9,6 +9,7 @@
   <script src="stock_system.js"></script>
   <script src="story_engine.js"></script>
   <script src="scenario_black_gold.js"></script>
+  <script src="historical_events.js"></script>
   <script src="ad_service.js"></script>
 </head>
 <body>
@@ -130,6 +131,24 @@
             🎬 申请美联储对冲救市 (看广告免除本周暴跌)
           </button>
           <button id="btn-close-news" class="btn-confirm-action">确认并继续人生 (Continue ➔)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 真实/篡改历史大事件互动弹窗 (Historical & Altered Black Swan Event Modal) -->
+    <div id="modal-historical-event" class="modal-layer hidden">
+      <div class="modal-card historical-modal">
+        <div class="hist-badge-row">
+          <span class="hist-year-badge" id="hist-year-badge">2027年 · 时代风暴</span>
+          <span class="hist-tag" id="hist-tag">⚡ 历史黑天鹅 / 平行风暴</span>
+        </div>
+        <div class="hist-header">
+          <span class="hist-icon" id="hist-icon">💥</span>
+          <h3 id="hist-title" style="margin: 6px 0; color:#facc15; font-size:15px;">P2P 互联网金融连环暴雷</h3>
+        </div>
+        <p class="hist-desc" id="hist-desc" style="font-size:12px; color:#cbd5e1; line-height:1.6; margin-bottom:12px;">详细事件背景...</p>
+        <div class="hist-choices-list" id="hist-choices-box">
+          <!-- 动态渲染互动抉择（含商城专属特权选项） -->
         </div>
       </div>
     </div>

@@ -204,6 +204,14 @@ class FullLifeGameEngine {
       }
     }
 
+    // 时代历史与魔改黑天鹅大事件 (P2P暴雷、比特币狂潮、GME逼空、AGI奇点、次贷危机)
+    if (window.historicalEventsManager && (numWeeks >= 52 || Math.random() < 0.35)) {
+      const histEvt = window.historicalEventsManager.checkYearEvents(this.currentYear, this.ownedAssets);
+      if (histEvt) {
+        setTimeout(() => this.showHistoricalEventModal(histEvt), 500);
+      }
+    }
+
     this.updateHUD();
     this.renderCurrentTab();
 
@@ -347,10 +355,23 @@ class FullLifeGameEngine {
       feedback: choice.feedback
     });
 
+    // 剧情抉择与华尔街股市双向实时联动
+    let stockFeedbackNotice = '';
+    if (choice.stockImpact && window.stockMarket) {
+      choice.stockImpact.forEach(si => {
+        const stock = window.stockMarket.stocks.find(s => s.symbol === si.symbol);
+        if (stock) {
+          stock.prevPrice = stock.price;
+          stock.price = parseFloat((stock.price * si.multiplier).toFixed(2));
+          stockFeedbackNotice += `\n【📈 股市实时冲击: ${stock.symbol} ${si.desc || ''} 最新价: $${stock.price.toFixed(2)}】`;
+        }
+      });
+    }
+
     this.updateHUD();
 
     // 弹出决策结果反馈
-    document.getElementById('feedback-text').innerText = choice.feedback;
+    document.getElementById('feedback-text').innerText = choice.feedback + stockFeedbackNotice;
     document.getElementById('modal-feedback').classList.remove('hidden');
 
     // 开启悔棋广告入口
@@ -830,6 +851,91 @@ class FullLifeGameEngine {
       this.currentPendingBearNews = null;
       bailoutBtn.classList.add('hidden');
     }
+
+    modal.classList.remove('hidden');
+  }
+
+  // 8. 时代历史大事件与魔改黑天鹅互动弹窗 (P2P、比特币、GME逼空、AGI奇点、次贷风暴)
+  showHistoricalEventModal(evt) {
+    const modal = document.getElementById('modal-historical-event');
+    document.getElementById('hist-year-badge').innerText = `${this.currentYear}年 · 时代风暴`;
+    document.getElementById('hist-icon').innerText = evt.icon;
+    document.getElementById('hist-title').innerText = evt.titleZh;
+    document.getElementById('hist-desc').innerText = evt.descZh;
+
+    const box = document.getElementById('hist-choices-box');
+    box.innerHTML = '';
+
+    evt.choices.forEach(choice => {
+      const btn = document.createElement('button');
+      let isUnlocked = true;
+      let privilegeTag = '';
+
+      if (choice.requires) {
+        const hasAsset = this.ownedAssets.some(a => a.id === choice.requires.item);
+        if (hasAsset) {
+          btn.className = 'hist-choice-btn privilege';
+          privilegeTag = `<span style="color:#facc15; font-size:10px; display:block; margin-bottom:3px; font-weight:800;">👑 【已持有 ${choice.requires.name} · 专属商城特权已激活】</span>`;
+        } else {
+          btn.className = 'hist-choice-btn locked';
+          isUnlocked = false;
+          privilegeTag = `<span style="color:#ef4444; font-size:10px; display:block; margin-bottom:3px; font-weight:bold;">🔒 【需在商城持有【${choice.requires.name}】方可解锁此特权选项】</span>`;
+        }
+      } else {
+        btn.className = 'hist-choice-btn';
+      }
+
+      btn.innerHTML = `
+        ${privilegeTag}
+        <div>${choice.text}</div>
+        <div style="font-size:11px; color:#38bdf8; margin-top:4px;">
+          ${choice.impact.money > 0 ? `预期收益: +$${choice.impact.money.toLocaleString()}` : (choice.impact.money < 0 ? `预估损失: -$${Math.abs(choice.impact.money).toLocaleString()}` : '资产保全: 无额外损失')}
+        </div>
+      `;
+
+      if (isUnlocked) {
+        btn.addEventListener('click', () => {
+          modal.classList.add('hidden');
+          // 执行资金与数值变化
+          this.liquidCash += choice.impact.money;
+          if (choice.impact.happiness) this.romance = Math.max(0, Math.min(100, this.romance + (choice.impact.happiness > 0 ? 5 : -5)));
+          if (choice.impact.credit) this.credit = Math.max(0, Math.min(100, this.credit + choice.impact.credit));
+          if (choice.impact.reputation) this.reputation = Math.max(0, Math.min(100, this.reputation + choice.impact.reputation));
+          if (choice.impact.wisdom) this.wisdom = Math.max(0, Math.min(100, this.wisdom + choice.impact.wisdom));
+
+          // 股票联动
+          let stockNotice = '';
+          if (choice.stockImpact && window.stockMarket) {
+            choice.stockImpact.forEach(si => {
+              const stock = window.stockMarket.stocks.find(s => s.symbol === si.symbol);
+              if (stock) {
+                stock.prevPrice = stock.price;
+                stock.price = parseFloat((stock.price * si.multiplier).toFixed(2));
+                stockNotice += `\n【📈 股市受波及: ${stock.symbol} ${si.desc} 最新市价: $${stock.price.toFixed(2)}】`;
+              }
+            });
+          }
+
+          // 记录历史事实长卷
+          this.lifeEventsLog.push({
+            year: this.currentYear,
+            age: this.currentAge,
+            title: evt.titleZh,
+            choice: choice.text,
+            feedback: choice.feedback
+          });
+
+          this.updateHUD();
+          this.renderCurrentTab();
+
+          // 弹出结果说明
+          document.getElementById('feedback-text').innerText = `${choice.feedback}\n${stockNotice}`;
+          document.getElementById('modal-feedback').classList.remove('hidden');
+        });
+      }
+
+      box.appendChild(btn);
+    });
 
     modal.classList.remove('hidden');
   }
