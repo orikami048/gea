@@ -393,9 +393,13 @@ class FullLifeGameEngine {
     // 开启悔棋广告入口
     document.getElementById('btn-ad-rewind').classList.remove('hidden');
 
-    // 发生时间线跃迁
+    // 发生时间线跃迁与分支分裂提示
+    const prevTimeline = window.timelineDirector.activeTimelineName;
     if (choice.targetNodeId) {
-      window.timelineDirector.transitionTo(choice.targetNodeId);
+      const nextNode = window.timelineDirector.transitionTo(choice.targetNodeId);
+      if (nextNode && nextNode.timelineName !== prevTimeline) {
+        this.showToast(`⚡【时间线分裂！】你已步入《${nextNode.timelineName}》！`);
+      }
     } else {
       setTimeout(() => this.showLifeBiographyEndgame(), 1200);
     }

@@ -1,416 +1,487 @@
 /**
  * 完整对齐原版《奖来7000万》的多时间线树状分支命运图谱 (Multi-Timeline Branching Graph Engine)
- * 100% 对应原版核心架构:
- * - 10 大年龄跨度时代 (29岁 ~ 99岁，共3692周)
- * - 真实时间线分水岭:
- *    - 【牢狱服刑时间线 vs 合规大亨时间线】(对照原版 CH03_PRISON)
- *    - 【硅谷AI成功暴赚百倍 vs 研发破产血本无归】(对照原版 CH04_AI_SUCCESS / CH04_AI_LOSS)
- *    - 【原配白头偕老 vs 婚变财产分割再婚】(对照原版 CH04 婚姻重选)
- *    - 【多子女常春藤精英 vs 败家弃子】(对照原版 CH06)
- * - 交互式「命运时间线决策树 (Timeline Tree)」可视化
+ * 具备 10 大截然不同的分支时间线，每个选择都能直接分裂出独立的时间线：
+ * 
+ * 1. 🌲 【隐士哲人·山野圣贤线】(Zen Philanthropist) - 隐姓埋名、匿名慈善、安详一生
+ * 2. 🔥 【比弗利名流·风云大亨线】(Beverly Hills Celebrity) - 聚光灯、世纪婚礼、派对狂欢
+ * 3. 🤖 【硅谷科技教皇·具身智能线】(Tech Sovereign) - 斯坦福极客、机器人万亿市值敲钟
+ * 4. 🏛️ 【华盛顿暗黑权力幕后线】(Washington Kingmaker) - 老钱联姻、国会游说、影子操盘
+ * 5. ⛓️ 【联邦重犯·铁窗量化线】(Federal Inmate & Syndicate) - 商业行贿爆雷、入狱服刑5年、狱中涅槃
+ * 6. 🩸 【华尔街嗜血大空头线】(Wall Street Bloodhound) - 离岸暗池、狙击做空、收割全球机构
+ * 7. 🌴 【加勒比海盗·离岸主权君王线】(Offshore Sovereign Corsair) - 避税金库、买下免税群岛
+ * 8. 🏭 【重工实业·清洁能源托拉斯线】(Clean Energy Monopolist) - 地中海跨洋管网、水土生态治理
+ * 9. 🧬 【赛博永生·基因重组长生线】(Cyber Transhumanist) - 端粒重组、打破人类寿命天花板
+ * 10. 📉 【至暗破产·绝境东山再起线】(Fallen Phoenix) - 资产归零、绝地反击、白手逆袭
  */
 
 const TIMELINE_GRAPH_NODES = {
   // ══════════════════════════════════════════════════════════════════════════════
-  // 【第一章：29至34岁】中奖兑付、财富知情与人生基石
+  // 【第一章：29至34岁】中奖兑付、四大初始时间线分裂
   // ══════════════════════════════════════════════════════════════════════════════
   'CH01_WIN': {
     id: 'CH01_WIN',
     chapter: 'CH01',
     ageRange: '29-30岁',
-    timelineName: '🌟 命运起点 · 头奖诞生',
-    title: '第一幕：暴富降临与兑奖抉择',
-    scene: '🎰 拉斯维加斯 7-Eleven 彩票总署',
+    timelineName: '🌟 命运奇点 · 头奖降临',
+    title: '第一幕：暴富降临与四大初始时间线抉择',
+    scene: '🎰 拉斯维加斯彩票总署 · 贵宾兑奖室',
     image: '🎟️',
-    narrative: `那张20美元机选的彩票匹配了全部六个号码。
-扣税后净现金 5200 万美元静静躺在你的银行账户里。柜台人员递来特大号合影支票，等待你的下一步决定。`,
+    narrative: `那张20美元机选的彩票匹配了全部六个号码。扣税后净现金 5200 万美元静静躺在你的银行账户里。
+这笔巨款是通往天堂的门票，也是撕裂人生的导火索。四条截然不同的未来轨迹正在你面前裂开：`,
     choices: [
       {
-        text: '🕶️【隐匿身份】设立特拉华匿名信托，严密封锁中奖消息',
+        text: '🕶️【设立特拉华盲盒信托】彻底隐匿身份，金蝉脱壳进入离岸避税体系',
         setFact: { wealth_disclosure: 'secret' },
-        targetNodeId: 'CH01_SECRET_PATH',
-        impact: { money: 0, happiness: 15, fame: -10, karma: 10 },
-        feedback: '明智之举！你的真实姓名被严密保护。没有暴发户的聚光灯，你在暗处握住了亿万资本。'
+        targetNodeId: 'T_OFFSHORE_ROOT',
+        impact: { money: 0, happiness: 15, fame: -15, karma: 10 },
+        feedback: '【⚡ 时间线分裂！】你已步入《🌴 加勒比海盗·离岸主权君王时间线》！真实姓名永久封存，资本潜入幽灵暗池！'
       },
       {
-        text: '📸【公开亮相】高举巨型支票召开全球新闻发布会，拥抱顶级流量',
+        text: '📸【召开全球新闻发布会】手持巨额支票全网直播，拥抱好莱坞顶级流量',
         setFact: { wealth_disclosure: 'public' },
-        targetNodeId: 'CH01_PUBLIC_PATH',
-        impact: { money: 0, happiness: 20, fame: 50, karma: -10 },
-        feedback: '你一夜登上全球各大媒体头条！粉丝暴涨两百万，但随之而来的是无数远房亲友的借款轰炸与骗局邀约。'
-      }
-    ]
-  },
-
-  // ── 分支 1A: 隐秘财富时间线 ──
-  'CH01_SECRET_PATH': {
-    id: 'CH01_SECRET_PATH',
-    chapter: 'CH01',
-    ageRange: '31-34岁',
-    timelineName: '🌲 隐士崛起线',
-    title: '第二幕：借款试亲友与指定伴侣',
-    scene: '☕ 故乡小镇老街茶馆',
-    image: '🤝',
-    narrative: `你隐瞒了千万身家，假称自己在大城市贷款买房需要凑首付，向身边的亲友发去借款测试。
-同时，母亲为你安排了相亲，两位不同背景的姑娘走入你的生活。`,
-    choices: [
-      {
-        text: '👰【青梅竹马·苏菲】选择朴实善良的儿时旧识，低调成家相濡以沫',
-        setFact: { partner_id: 'sophie_pure', marital_status: 'married' },
-        targetNodeId: 'CH02_STABLE_HOME',
-        impact: { money: -500000, happiness: 35, romance: 40, reputation: 10 },
-        feedback: '苏菲没有在乎你的房子大小，甚至拿出了自己工作攒的存款帮你。婚礼在小镇教堂温馨举行，你体会到了久违的安心。'
+        targetNodeId: 'T_CELEB_ROOT',
+        impact: { money: 0, happiness: 25, fame: 60, karma: -10 },
+        feedback: '【⚡ 时间线分裂！】你已步入《🔥 比弗利名流·风云大亨时间线》！全球推特瞬间登顶第一，名利场的大门轰然敞开！'
       },
       {
-        text: '💼【精英学妹·萨拉】选择硅谷常春藤投资总监，强强联合组建家族办公室',
-        setFact: { partner_id: 'sarah_elite', marital_status: 'married' },
-        targetNodeId: 'CH02_ELITE_HOME',
-        impact: { money: -2000000, happiness: 20, wisdom: 25, credit: 30 },
-        feedback: '萨拉一眼识破了你的金融布局，两人相视一笑签署了家族信托协议。你们不仅是伴侣，更是横跨投融资的顶级合伙人！'
-      }
-    ]
-  },
-
-  // ── 分支 1B: 名流聚光灯时间线 ──
-  'CH01_PUBLIC_PATH': {
-    id: 'CH01_PUBLIC_PATH',
-    chapter: 'CH01',
-    ageRange: '31-34岁',
-    timelineName: '🔥 浮华名流线',
-    title: '第二幕：比弗利名流圈与名媛婚约',
-    scene: '🥂 比弗利山庄四季酒店顶层私董会',
-    image: '💎',
-    narrative: `公开中奖后，好莱坞名媛、名模和经纪人如同嗅到血腥的鲨鱼蜂拥而至。
-名媛“克洛伊”（Chloe）在游艇晚宴上向你举杯，提出两家联姻，但拒绝签署婚前财产协议。`,
-    choices: [
-      {
-        text: '🛡️【铁腕协议】坚决要求签署婚前协议 (Prenup)，不妥协一分财产底线',
-        setFact: { partner_id: 'chloe_prenup', marital_status: 'married_prenup' },
-        targetNodeId: 'CH02_CELEB_PRENUP',
-        impact: { money: -5000000, happiness: 10, fame: 30, credit: 20 },
-        feedback: '克洛伊虽不情愿，但最终在金钱诱惑下签署了由顶级律师起草的铁血协议。你保全了财富主权。'
+        text: '💻【暗中将全部资金兑入算法暗池】建立高频量化模型，开启嗜血空头之路',
+        setFact: { wealth_disclosure: 'quant' },
+        targetNodeId: 'T_SHORT_ROOT',
+        impact: { money: 5000000, wisdom: 30, fame: 10, karma: -20 },
+        feedback: '【⚡ 时间线分裂！】你已步入《🩸 华尔街嗜血大空头时间线》！冰冷的K线成为你唯一的信仰，猎杀对冲基金的号角吹响！'
       },
       {
-        text: '❤️【盲信真爱】放弃婚前协议，豪掷千万举办世纪奢华婚礼',
-        setFact: { partner_id: 'chloe_noprenup', marital_status: 'married_vulnerable' },
-        targetNodeId: 'CH02_CELEB_VULNERABLE',
-        impact: { money: -15000000, happiness: 30, fame: 50, romance: 20, credit: -10 },
-        feedback: '好莱坞全城轰动！世纪婚礼耗资千万，你的奢华登峰造极，但你的半数身家从此埋下了致命隐患。'
+        text: '🕊️【隐姓埋名回馈故里】秘密将八成资金注入匿名慈善成长基金',
+        setFact: { wealth_disclosure: 'saint' },
+        targetNodeId: 'T_ZEN_ROOT',
+        impact: { money: -20000000, happiness: 40, fame: -20, karma: 60 },
+        feedback: '【⚡ 时间线分裂！】你已步入《🌲 隐士哲人·山野圣贤时间线》！拒绝金钱腐蚀心灵，你选择了一条大音希声的崇高道路！'
       }
     ]
   },
 
   // ══════════════════════════════════════════════════════════════════════════════
-  // 【第二章：35至39岁】共同生活与成为父母
+  // 【时间线分支 A: 🌴 离岸主权君王线 (Offshore Corsair)】
   // ══════════════════════════════════════════════════════════════════════════════
-  'CH02_STABLE_HOME': {
-    id: 'CH02_STABLE_HOME',
-    chapter: 'CH02',
-    ageRange: '35-39岁',
-    timelineName: '🌲 隐士崛起线',
-    title: '第三幕：亲生子女与温馨港湾',
-    scene: '🏡 湖畔现代庄园 · 儿童房',
-    image: '👶',
-    narrative: `时光飞逝，你们的长子长女相继诞生。苏菲悉心照料家庭，你们的生活宁静祥和，财富在低调稳健的资产配置中稳步增长。`,
+  'T_OFFSHORE_ROOT': {
+    id: 'T_OFFSHORE_ROOT',
+    chapter: 'CH01',
+    ageRange: '31-34岁',
+    timelineName: '🌴 跨国避税·加勒比海盗线',
+    title: '第二幕：开曼壳架构与私人免税海岛',
+    scene: '🛥️ 巴哈马拿骚深水游艇码头',
+    image: '🏝️',
+    narrative: `依托特拉华与开曼群岛的重叠信托架构，你的资产在全球税务稽查网中彻底隐形。
+巴哈马政府官员私下向你推介一座拥有独立直升机坪和深水港的私人免税海岛，售价 2500 万美元。`,
     choices: [
       {
-        text: '🎓【重金精英启蒙】设立千万美元家族教育成长基金，聘请私教双语陪伴',
-        setFact: { child_plan: 'elite_education' },
-        targetNodeId: 'CH03_LAND_DECISION',
-        impact: { money: -3000000, wisdom: 20, happiness: 25 },
-        feedback: '孩子们在充满爱的氛围中茁壮成长，知书达礼，家庭成为了你最坚不可摧的后盾。'
+        text: '🏝️【斥资买下独立海岛】组建私人国际安保，建立属于自己的离岸国度',
+        setFact: { owns_private_island: true },
+        targetNodeId: 'T_OFFSHORE_MID',
+        impact: { money: -25000000, reputation: 25, credit: 35 },
+        feedback: '【时间线推进！】升起你的私人家族旗帜！你在这座岛上拥有超越主权国家法律的绝对特权，成为名副其实的离岸君王！'
+      },
+      {
+        text: '🏛️【转战华盛顿政治游说】利用离岸黑金设立两党智库，收买国会法案',
+        setFact: { washington_lobbyist: true },
+        targetNodeId: 'T_KINGMAKER_MID',
+        impact: { money: -15000000, wisdom: 25, credit: 40 },
+        feedback: '【⚡ 时间线突变！】你已转向步入《🏛️ 华盛顿暗黑权力幕后时间线》！国会山议员们在你的私人游艇上签署秘密法案！'
       }
     ]
   },
 
-  'CH02_ELITE_HOME': {
-    id: 'CH02_ELITE_HOME',
-    chapter: 'CH02',
-    ageRange: '35-39岁',
-    timelineName: '💼 资本同盟线',
-    title: '第三幕：代际信托与硅谷拓荒',
-    scene: '🏢 旧金山泛美金字塔顶层办公室',
-    image: '📈',
-    narrative: `萨拉为你生下一个聪慧的女儿，同时家族办公室已管理着上亿美元的私募股权头寸。家庭与事业在此深度交融。`,
+  'T_OFFSHORE_MID': {
+    id: 'T_OFFSHORE_MID',
+    chapter: 'CH03',
+    ageRange: '40-44岁',
+    timelineName: '🌴 跨国避税·加勒比海盗线',
+    title: '第三幕：公海暗池洗钱与全球司法风暴',
+    scene: '🏰 私人海岛要塞地下指挥中心',
+    image: '🏴‍☠️',
+    narrative: `美国国税局（IRS）与国际刑警联合发起代号“加勒比风暴”的跨境追税行动，多艘巡逻舰封锁了公海航道。
+你的私人智囊团制定了应急预案：是动用私人武装与外交豁免权硬刚，还是金蝉脱壳转入瑞士地下金库？`,
     choices: [
       {
-        text: '🏛️【离岸信托设立】将核心股权打包入开曼不可撤销信托，隔绝代际风险',
-        setFact: { child_plan: 'trust_protection' },
-        targetNodeId: 'CH03_LAND_DECISION',
-        impact: { money: -1500000, credit: 30, wisdom: 25 },
-        feedback: '法律架构无懈可击！即便未来面临任何全球动荡，你的后代仍享有终身优渥的生活保障。'
+        text: '🛡️【出示岛国总理外交豁免护照】启动私家防卫队，不交一分钱霸气逼退调查官',
+        targetNodeId: 'T_OFFSHORE_LATE',
+        impact: { money: -5000000, fame: 40, credit: 30 },
+        feedback: '法律战大获全胜！国际海事法庭宣布你享有完整外交不容侵犯权，华尔街富豪们跪求将资产打包入你的海岛信托！'
+      },
+      {
+        text: '🩸【绝密转战瑞士深山金库】将全部流动资产兑现为物理黄金埋入花岗岩',
+        targetNodeId: 'T_ZEN_LATE',
+        impact: { money: 0, wisdom: 35, happiness: 20 },
+        feedback: '【时间线汇流！】避开风头，你将千吨黄金深埋阿尔卑斯山，进入大隐隐于市的永恒防御状态。'
       }
     ]
   },
 
-  'CH02_CELEB_PRENUP': {
-    id: 'CH02_CELEB_PRENUP',
-    chapter: 'CH02',
-    ageRange: '35-39岁',
-    timelineName: '🔥 浮华名流线',
-    title: '第三幕：名流红毯与代孕继承人',
-    scene: '🌴 迈阿密海滩顶层复式套房',
+  'T_OFFSHORE_LATE': {
+    id: 'T_OFFSHORE_LATE',
+    chapter: 'CH07',
+    ageRange: '60-80岁',
+    timelineName: '🌴 跨国避税·加勒比海盗线',
+    title: '第四幕：公海终极独立邦国·世袭离岸帝国',
+    scene: '👑 私人海岛大殿 · 独立建国庆典',
+    image: '🔱',
+    narrative: `岁月流转，你的海岛已扩建为容纳数万顶尖科学家的离岸自贸港与无税自由邦。
+全球大国在此停靠航母与你签署引渡条约，你的人生从当年的小职员，彻底升维为近代人类罕见的私人主权君王。`,
+    choices: [
+      {
+        text: '📜【阅毕全书·开启离岸君王终极报告】(View Grand Finale)',
+        targetNodeId: null,
+        impact: { fame: 50 },
+        feedback: '你以独立主权者的身份俯瞰世界，此生波澜壮阔，无怨无悔！'
+      }
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // 【时间线分支 B: 🔥 比弗利名流·风云大亨线 (Celebrity & Playboy)】
+  // ══════════════════════════════════════════════════════════════════════════════
+  'T_CELEB_ROOT': {
+    id: 'T_CELEB_ROOT',
+    chapter: 'CH01',
+    ageRange: '31-34岁',
+    timelineName: '🔥 比弗利名流·风云大亨线',
+    title: '第二幕：比弗利山庄庄园与名媛婚约考验',
+    scene: '🏰 比弗利山庄日落大道庄园 · 泳池派对',
     image: '🥂',
-    narrative: `克洛伊不愿影响身材，你们通过瑞士顶级合法医疗机构迎来了继承人。浮华的派对仍在继续，但两人在金钱上的距离感始终存在。`,
+    narrative: `你斥资两千万拿下全城地标庄园，泳池派对永不落幕。好莱坞一线名媛“克洛伊”向你倾心，但强烈抵触签署婚前协议。`,
     choices: [
       {
-        text: '🛥️【购置深海游艇】维持名流体面，进入跨国商业与土地诱惑阶段',
-        setFact: { child_plan: 'surrogate_heir' },
-        targetNodeId: 'CH03_LAND_DECISION',
-        impact: { money: -8000000, fame: 20, happiness: 10 },
-        feedback: '金钱维系着光鲜的外壳，但你的注意力已逐渐转向更大的资本猎场。'
+        text: '🛡️【坚持铁血婚前协议】不签协议绝不领证，捍卫资产主权',
+        setFact: { marital_status: 'married_prenup' },
+        targetNodeId: 'T_CELEB_MID_STABLE',
+        impact: { money: -5000000, reputation: 25, credit: 20 },
+        feedback: '克洛伊妥协签字。你享受着聚光灯下的神仙眷侣形象，同时在法律上筑起了防火墙。'
+      },
+      {
+        text: '❤️【盲信真爱·千金买笑】放弃婚前协议，赠送五千万共同账户举办世纪婚礼',
+        setFact: { marital_status: 'married_trap' },
+        targetNodeId: 'T_CELEB_MID_DISASTER',
+        impact: { money: -25000000, romance: 40, fame: 50, credit: -20 },
+        feedback: '【⚠️ 致命伏笔！】世纪婚礼轰动全球，但你的半数财富已完全暴露在他人指尖！'
       }
     ]
   },
 
-  'CH02_CELEB_VULNERABLE': {
-    id: 'CH02_CELEB_VULNERABLE',
-    chapter: 'CH02',
-    ageRange: '35-39岁',
-    timelineName: '⚠️ 危机潜伏线',
-    title: '第三幕：挥霍无度与裂痕初现',
-    scene: '🛍️ 巴黎蒙田大道奢侈品店',
+  'T_CELEB_MID_STABLE': {
+    id: 'T_CELEB_MID_STABLE',
+    chapter: 'CH03',
+    ageRange: '40-44岁',
+    timelineName: '🔥 比弗利名流·风云大亨线',
+    title: '第三幕：好莱坞制片传媒帝国与超级跑车车队',
+    scene: '🎬 环球影业私董会放映厅',
+    image: '🏎️',
+    narrative: `你在好莱坞收购了独立制片厂，名下豪车成排。此时地中海跨国基建与土地招标向你招手，需要你决定资本的下一步流向。`,
+    choices: [
+      {
+        text: '🩸【受贿贪婪·私相授受】为图暴利，向主管官员私下输送巨额干股',
+        targetNodeId: 'T_PRISON_ROOT',
+        impact: { money: -20000000, credit: -50, karma: -50 },
+        feedback: '【⚡ 命运断崖式跌落！】你已步入《⛓️ 联邦重犯·铁窗量化时间线》！名流光环瞬间被司法风暴粉碎！'
+      },
+      {
+        text: '🤖【转战硅谷极客圈】厌倦浮华派对，重金领投斯坦福具身智能机器人',
+        targetNodeId: 'T_AI_ROOT',
+        impact: { money: -20000000, wisdom: 35, fame: 20 },
+        feedback: '【⚡ 时间线突变！】你已转向步入《🤖 硅谷科技教皇时间线》！洗尽铅华，直奔人类前沿！'
+      }
+    ]
+  },
+
+  'T_CELEB_MID_DISASTER': {
+    id: 'T_CELEB_MID_DISASTER',
+    chapter: 'CH03',
+    ageRange: '40-44岁',
+    timelineName: '📉 至暗破产·绝境逆袭线',
+    title: '第三幕：世纪婚变背刺·八千万资产遭冻结分割',
+    scene: '⚖️ 洛杉矶高等法院家事法庭',
     image: '💔',
-    narrative: `没有婚前协议的约束，克洛伊花钱如流水，年开销冲上千万。在孩子出生的第二年，你发现她与好莱坞制片人往来甚密，且暗中在转移资产。`,
+    narrative: `婚后第七年，克洛伊与私人健身教练卷走三千万海外资产并起诉离婚。
+由于没有婚前协议，法庭判决平分所有共有房产与公司股权。你的流动资金彻底见底，面临破产危机！`,
     choices: [
       {
-        text: '🕵️【雇佣私人侦探搜集证据】暗中收缩权限，准备迎接硬仗',
-        setFact: { child_plan: 'fragile_marriage' },
-        targetNodeId: 'CH03_LAND_DECISION',
-        impact: { money: -500000, wisdom: 15, happiness: -20 },
-        feedback: '危机感笼罩了你。你开始意识到，没有制度约束的金钱，是一场迟早降临的灾难。'
+        text: '💪【绝境清仓·白手二次逆袭】变卖残余名表超跑，凭借华尔街量化旧部东山再起',
+        targetNodeId: 'T_FALLEN_COMEBACK',
+        impact: { money: 10000000, wisdom: 40, credit: 30 },
+        feedback: '【⚡ 时间线分裂！】你已步入《📉 至暗破产·绝境东山再起时间线》！雄狮断腕，你在废墟上重铸坚不可摧的心智！'
       }
     ]
   },
 
   // ══════════════════════════════════════════════════════════════════════════════
-  // 【第三章：40至44岁】重大时间线分水岭：土地诱惑与牢狱分流 (对照原版 CH03_PRISON)
+  // 【时间线分支 C: ⛓️ 联邦重犯·铁窗量化线 (Federal Prison)】
   // ══════════════════════════════════════════════════════════════════════════════
-  'CH03_LAND_DECISION': {
-    id: 'CH03_LAND_DECISION',
+  'T_PRISON_ROOT': {
+    id: 'T_PRISON_ROOT',
     chapter: 'CH03',
-    ageRange: '40-42岁',
-    timelineName: '⚖️ 命运十字路口 · 牢狱分水岭',
-    title: '第四幕：百亿深海油气土地招标与回扣诱惑',
-    scene: '⚓ 欧洲地中海港口秘密私董会',
-    image: '🛢️',
-    narrative: `四十岁这一年，你面临人生最大的一次商业跃升机会——某沿海主权国出让价值百亿美元的深海油气管网与土地独家承包权。
-当地主管官员赵长官深夜私下递给你一份手写协议：“只要私下转入我们离岸基金 2000 万美元回扣干股，项目直接内定给你，保底十年赚十亿。”`,
-    choices: [
-      {
-        text: '🩸【铤而走险·输送回扣】签署秘密协议，调集离岸黑金拿下项目',
-        setFact: { prison_convict: true },
-        targetNodeId: 'CH03_PRISON_TIMELINE',
-        impact: { money: -20000000, credit: -50, fame: -40, karma: -50 },
-        feedback: '【⚠️ 致命抉择 · 踩中世纪雷区！】你以为万无一失，却不知该官员早已被国际刑警与反贪局秘密立案调查！'
-      },
-      {
-        text: '🏛️【拒绝受贿·走阳光公开竞标】联手联合国绿色基金，以公开透明水土治理方案竞标',
-        setFact: { prison_convict: false },
-        targetNodeId: 'CH03_TITAN_TIMELINE',
-        impact: { money: -10000000, credit: 40, reputation: 50, karma: 40 },
-        feedback: '【🌟 正道荣光！】你断然拒绝了受贿提议。半年后该官员东窗事发被捕入狱，而你凭借无懈可击的环保方案赢得国际社会赞誉，合法拿下特许经营权！'
-      }
-    ]
-  },
-
-  // ── 【牢狱服刑 5 年时间线】 (100% 对照原版 CH03_PRISON) ──
-  'CH03_PRISON_TIMELINE': {
-    id: 'CH03_PRISON_TIMELINE',
-    chapter: 'CH03',
-    ageRange: '42-45岁',
-    timelineName: '⛓️ 牢狱服刑时间线 (Federal Prison)',
-    title: '第五幕：手写协议被查·判处服刑五年',
-    scene: '🔒 纽约联邦惩教中心 (MCC New York) · 铁窗与高墙',
+    ageRange: '41-45岁',
+    timelineName: '⛓️ 联邦重犯·铁窗量化线',
+    title: '第四幕：手写协议曝光·判处联邦监狱服刑五年',
+    scene: '🔒 纽约联邦惩教中心 (MCC) · 高墙铁丝网',
     image: '⛓️',
-    narrative: `手写协议被曝光，国际反腐巨网收拢。
-法槌重重落下：因跨国商业贿赂与洗钱罪，你被判处联邦监狱服刑五年，罚没三千万美元非法所得。
-铁门在你身后沉重关上。昔日亿万富翁，如今只剩胸口冰冷的囚徒编号【#89413】。
-服刑期间，监狱长发现你曾是顶级量化天才，让你在医务室负责协助监狱基金税务。`,
+    narrative: `手写回扣协议被国际反腐局查获。法槌重重落下：罚没三千万美元，判处服刑五年！
+昔日亿万富翁，如今只有胸前代号【#89413】。
+但在牢狱中，监狱长发现你高超的财务模型，私下请你为监狱内部信托与警员退休基金进行避险规划。`,
     choices: [
       {
-        text: '🧘【铁窗苦修·重构心智】在狱中研读量子计算与脑科学，暗中推演下一代AI架构',
-        targetNodeId: 'CH04_POST_PRISON_REENTRY',
-        impact: { money: 0, wisdom: 40, health: -15, reputation: -20 },
-        feedback: '高墙困住了你的肉体，却淬炼了你的灵魂。五年的屈辱与清苦，让你褪去了浮躁，成为真正冷酷而精深的洞察者。'
+        text: '🧘【狱中苦修·暗中操盘】暗中帮监狱管理层理财赢得庇护，同时在脑海推演下一代算法',
+        targetNodeId: 'T_PRISON_REENTRY',
+        impact: { money: 0, wisdom: 45, health: -10, credit: -20 },
+        feedback: '【时间线推进！】铁窗磨平了浮躁。五年间你虽在深渊，却用大脑推演完成了震撼后世的颠覆性商业蓝图！'
       }
     ]
   },
 
-  // ── 【阳光实业财阀时间线】 (合规成功路线) ──
-  'CH03_TITAN_TIMELINE': {
-    id: 'CH03_TITAN_TIMELINE',
-    chapter: 'CH03',
-    ageRange: '42-45岁',
-    timelineName: '🏰 实业财阀时间线 (Green Energy Mogul)',
-    title: '第五幕：绿色能源管道通气与名望登顶',
-    scene: '🌍 联合国可持续发展峰会 · 日内瓦',
-    image: '⚡',
-    narrative: `地中海管网顺利通气，源源不断输送清洁能源，每年为你贡献数千万美元净现金流。
-你以“商业向善、兼济天下”的形象登上时代周刊封面，成为欧美政商界备受推崇的工业巨擎。`,
-    choices: [
-      {
-        text: '🚀【进军前沿硬科技】携滚滚现金流，进入下一代通用人工智能 (AGI) 军备竞赛',
-        targetNodeId: 'CH04_AI_INVESTMENT',
-        impact: { money: 20000000, reputation: 30, credit: 30 },
-        feedback: '实业现金流如蓄水池般充沛！你手握巨资，站在了人类科技革命的最前沿。'
-      }
-    ]
-  },
-
-  // ══════════════════════════════════════════════════════════════════════════════
-  // 【第四章：45至49岁】硅谷机器人投资与婚姻重组 (对照原版 CH04_AI_SUCCESS / CH04_AI_LOSS)
-  // ══════════════════════════════════════════════════════════════════════════════
-  'CH04_POST_PRISON_REENTRY': {
-    id: 'CH04_POST_PRISON_REENTRY',
+  'T_PRISON_REENTRY': {
+    id: 'T_PRISON_REENTRY',
     chapter: 'CH04',
     ageRange: '46岁',
-    timelineName: '⛓️ 涅槃出狱线',
-    title: '第六幕：刑满释放·重返残破的世界',
-    scene: '🚪 联邦监狱铁门外 · 细雨霏霏',
+    timelineName: '⛓️ 联邦重犯·铁窗量化线',
+    title: '第五幕：刑满释放·雨中重逢与破釜沉舟',
+    scene: '🚪 联邦监狱沉重大门外 · 细雨初歇',
     image: '🌧️',
-    narrative: `五年刑期结束，铁门在你身后轰然开启。
-外面的世界已天翻地覆。若是此前未签署婚前协议的伴侣，早已在你入狱第二年卷款提出离婚；而你仅存的信托资产依然为你守住了最后两千万筹码。
-老友兼极客顾行舟（Gu）撑着黑伞站在雨中等你，他的后备箱里装着一台双足人形机器人原型机。`,
+    narrative: `沉重铁门在身后开启。你穿着洗得发白的旧风衣走出高墙。
+故交极客顾行舟（Gu）撑着伞在雨中等你，后备箱里放着两台最新研发的具身人形机器人原型机。`,
     choices: [
       {
-        text: '🦾【全部残余身家梭哈AI】“我失去的，必须用未来拿回来！”投资机器人',
-        targetNodeId: 'CH04_AI_SUCCESS',
-        impact: { money: -15000000, wisdom: 30, fame: 20 },
-        feedback: '破釜沉舟！在所有人视你为刑满释放废人时，你用最后的血本押注了人类未来最硬核的赛道！'
-      }
-    ]
-  },
-
-  'CH04_AI_INVESTMENT': {
-    id: 'CH04_AI_INVESTMENT',
-    chapter: 'CH04',
-    ageRange: '46岁',
-    timelineName: '🏰 实业财阀时间线',
-    title: '第六幕：硅谷具身智能千万天使轮',
-    scene: '🤖 斯坦福人工智能实验室战情室',
-    image: '🦾',
-    narrative: `天才科学家顾行舟向你展示了新一代具身智能机器人“宙斯”原型机。
-项目需要两千万元独立领投资金。这是一场要么单日归零、要么催生出万亿科技寡头的豪赌。`,
-    choices: [
-      {
-        text: '🚀【两千万全资领投】拿下 45% 股权与独家商业化专利授权',
-        targetNodeId: 'CH04_AI_SUCCESS',
-        impact: { money: -20000000, wisdom: 30, fame: 25 },
-        feedback: '投资协议签署完毕。你成为全球顶尖具身机器人公司的控股董事！'
+        text: '🦾【全部信托余粮梭哈AI】“我失去的一切，要亲手加倍拿回来！”',
+        targetNodeId: 'T_AI_SUCCESS',
+        impact: { money: -10000000, wisdom: 30, fame: 30 },
+        feedback: '【⚡ 史诗级跃迁！】你已重新杀回《🤖 硅谷科技教皇时间线》！罪徒出狱逆袭万亿巨头的神话拉开序幕！'
       },
       {
-        text: '🛑【谨慎拒绝·留存现金】不愿冒险，继续稳守传统能源与商业写字楼收租',
-        targetNodeId: 'CH04_AI_LOSS',
-        impact: { money: 0, happiness: 10, credit: 15 },
-        feedback: '你选择了保守防御。错过了科技爆发的火箭，但也规避了技术迭代初期的暴风雨。'
+        text: '🌲【看透红尘·深山隐退】带上仅存的五百万，远赴落基山脉过安宁岁月',
+        targetNodeId: 'T_ZEN_LATE',
+        impact: { money: 5000000, happiness: 40, health: 30 },
+        feedback: '【⚡ 时间线汇流！】你放下执念，步入《🌲 隐士哲人时间线》，与松涛星空终身相伴。'
       }
     ]
   },
 
-  // ── 【AI 爆发成为科技教皇时间线】 ──
-  'CH04_AI_SUCCESS': {
-    id: 'CH04_AI_SUCCESS',
+  // ══════════════════════════════════════════════════════════════════════════════
+  // 【时间线分支 D: 🤖 硅谷科技教皇线 (Tech Sovereign)】
+  // ══════════════════════════════════════════════════════════════════════════════
+  'T_AI_ROOT': {
+    id: 'T_AI_ROOT',
     chapter: 'CH04',
-    ageRange: '47-49岁',
-    timelineName: '🤖 硅谷科技教皇线 (Tech Sovereign)',
-    title: '第七幕：机器人量产震撼世界·市值破千亿',
-    scene: '🔔 纳斯达克时代广场敲钟大厅',
+    ageRange: '45-48岁',
+    timelineName: '🤖 硅谷科技教皇线',
+    title: '第四幕：两千万元领投斯坦福具身智能',
+    scene: '💻 硅谷帕洛阿尔托 · 宙斯机器人实验室',
+    image: '🦾',
+    narrative: `你成为新一代具身双足机器人“宙斯”的最大独立控股投资人。
+项目需要连续烧钱突破神经电机动力学。这是决定人类走向赛博时代还是研发破产的豪赌。`,
+    choices: [
+      {
+        text: '🚀【追加两千万封顶量产】自建独立核微电网，全速推进量产验证',
+        targetNodeId: 'T_AI_SUCCESS',
+        impact: { money: -20000000, wisdom: 40, fame: 35 },
+        feedback: '【时间线推进！】技术全面贯通！全球科技巨头排队抢购独家代理，奇迹诞生！'
+      }
+    ]
+  },
+
+  'T_AI_SUCCESS': {
+    id: 'T_AI_SUCCESS',
+    chapter: 'CH04',
+    ageRange: '48-55岁',
+    timelineName: '🤖 硅谷科技教皇线',
+    title: '第五幕：纳斯达克挂牌敲钟·市值冲破千亿美金',
+    scene: '🔔 纳斯达克时代广场大屏 · 沸腾的人群',
     image: '👑',
-    narrative: `奇迹发生了！具身智能机器人顺利通过图灵商用测试，五角大楼、亚马逊与特斯拉争相采购！
-公司在纳斯达克挂牌上市，首日暴涨 400%，市值突破千亿美元！
-你个人的账面净资产暴涨至 15 亿美元，昔日无论是商海浮沉还是牢狱之灾，都在这一刻被写成了传奇教科书！`,
+    narrative: `敲钟槌落下的一瞬间，开盘涨幅飙至 420%！公司市值突破千亿美元大关！
+你个人的股权账面价值飙升至惊人的 18 亿美元！时代周刊封面将你评为“定义二十一世纪的普罗米修斯”。`,
     choices: [
       {
-        text: '🏛️【构建百年家族传承】步入五十岁知天命之年，全面谋篇布局代际治理',
-        targetNodeId: 'CH05_FAMILY_GOVERNANCE',
-        impact: { money: 150000000, fame: 50, reputation: 50 },
-        feedback: '时代周刊将你列为全球最具影响力的百大人物之首！你站在了人类商业文明的最巅峰！'
-      }
-    ]
-  },
-
-  // ── 【稳健中产/传统守成时间线】 ──
-  'CH04_AI_LOSS': {
-    id: 'CH04_AI_LOSS',
-    chapter: 'CH04',
-    ageRange: '47-49岁',
-    timelineName: '🏰 稳健老钱家族线 (Quiet Aristocrat)',
-    title: '第七幕：错失风口·但家庭安详守成',
-    scene: '🏡 汉普顿私人海滩庄园',
-    image: '🌊',
-    narrative: `虽然你没有赶上AI暴富的造神运动，但你的固定资产、商铺租金与债券组合稳健如山。
-你远离了二级市场的惊涛骇浪，在儿女环绕与海风吹拂中平稳步入知天命之年。`,
-    choices: [
+        text: '🧬【向人类寿命极限宣战】斥资上亿研发端粒重组与赛博逆龄血清',
+        targetNodeId: 'T_CYBER_IMMORTAL',
+        impact: { money: -50000000, wisdom: 30, health: 30 },
+        feedback: '【⚡ 时间线分裂！】你已步入《🧬 赛博永生·基因重组长生时间线》！肉体苦弱，机械飞升与长生药局成为你的新疆域！'
+      },
       {
-        text: '☕【从容安度晚年】将精力聚焦在子女教育、亲人陪伴与慈善修养',
-        targetNodeId: 'CH05_FAMILY_GOVERNANCE',
-        impact: { money: 5000000, happiness: 30, health: 15 },
-        feedback: '平淡是真。在无数激进投机者破产跳楼的周期里，你的稳健让全家人享有恒久尊严。'
+        text: '🏛️【进军国会山·掌控国家科技命脉】利用技术优势介入全球地缘政治',
+        targetNodeId: 'T_KINGMAKER_MID',
+        impact: { money: -20000000, credit: 40, fame: 40 },
+        feedback: '【⚡ 时间线突变！】你已转向步入《🏛️ 华盛顿暗黑权力幕后时间线》！五角大楼将国家算力主权全权交托于你！'
       }
     ]
   },
 
   // ══════════════════════════════════════════════════════════════════════════════
-  // 【第五章至第十章：50至99岁】家族传承、长生药局与3692周终局长卷 (对照原版 CH05-CH10)
+  // 【时间线分支 E: 🧬 赛博永生·基因长生线 (Cyber Transhumanist)】
   // ══════════════════════════════════════════════════════════════════════════════
-  'CH05_FAMILY_GOVERNANCE': {
-    id: 'CH05_FAMILY_GOVERNANCE',
-    chapter: 'CH05',
-    ageRange: '50-69岁',
-    timelineName: '🏛️ 家族治理与代际传承',
-    title: '第八幕：父母长眠、子女成家与景区名望',
-    scene: '🌲 故乡山麓 · 家族永久生态陵园与慈善医院',
-    image: '🕯️',
-    narrative: `五十至六十岁这二十年间，至亲父母相继安详离世。你依照他们朴素的遗愿修建了惠及全镇的公益医院与生态公园。
-你的长子从麻省理工毕业自主创办卫星通讯公司，女儿则成为顶尖公益法律专家。家族的枝叶已繁茂蔽日。`,
-    choices: [
-      {
-        text: '🧬【踏入古稀之年】面对衰老挑战，探索深海端粒与逆龄长寿科研',
-        targetNodeId: 'CH08_LONGEVITY_TEST',
-        impact: { money: -30000000, wisdom: 20, health: 10 },
-        feedback: '财富已经不再是数字游戏。你将目光投向了人类最终的敌人——衰老与时间。'
-      }
-    ]
-  },
-
-  'CH08_LONGEVITY_TEST': {
-    id: 'CH08_LONGEVITY_TEST',
+  'T_CYBER_IMMORTAL': {
+    id: 'T_CYBER_IMMORTAL',
     chapter: 'CH08',
-    ageRange: '70-89岁',
-    timelineName: '🧬 终极长生与晚年照护',
-    title: '第九幕：重病考验、长生血清与精神圆满',
-    scene: '🏔️ 瑞士阿尔卑斯山麓尖端医疗中心 · 78岁',
-    image: '🧪',
-    narrative: `七十多岁时，严重的器官老化向你发出最后通牒。私人医疗集团为你提供了合规的器官修复手术与尖端端粒重组血清。
-躺在病床上，窗外是巍峨的雪山与晚霞。伴侣紧紧握着你的手，床边摆满了四世同堂的合影。`,
+    ageRange: '70-99岁',
+    timelineName: '🧬 赛博永生·基因长生线',
+    title: '第六幕：阿尔卑斯逆龄血清·战胜衰老与死神',
+    scene: '🧪 瑞士阿尔卑斯山麓尖端冷冻生命中心 · 82岁',
+    image: '🧬',
+    narrative: `八十岁这一年，重病没有击垮你。你签署生死状注入了第一代端粒重组与仿生器官矩阵。
+奇迹在监护仪上跳动：你的细胞生理机能回测至 42 岁黄金状态，白发重焕乌黑！同龄的对手相继埋入黄土，而你依然目光锐利。`,
     choices: [
       {
-        text: '🕊️【平静受老·签署生前预嘱】拒绝无意义的插管创伤，以尊严和爱安享终局',
-        targetNodeId: 'CH10_GRAND_FINALE',
-        impact: { happiness: 50, karma: 50, health: 20 },
-        feedback: '你获得了超越肉体的崇高宁静。所有的掠夺与拼杀都已归于尘土，留下的唯有对生命深深的感恩。'
+        text: '📜【阅毕全书·开启赛博长生万字史诗大结局】(View Final Chronicle)',
+        targetNodeId: null,
+        impact: { fame: 60, health: 40 },
+        feedback: '全剧终！你战胜了人类千万年以来的达摩克利斯之剑，成为横跨两个世纪的长生教皇！'
       }
     ]
   },
 
-  'CH10_GRAND_FINALE': {
-    id: 'CH10_GRAND_FINALE',
-    chapter: 'CH10',
-    ageRange: '90-99岁 (第3692周)',
-    timelineName: '👑 3692周终局 · 人生万字史诗长卷',
-    title: '第十幕：九十九岁固定终局·人生纪念册封卷',
-    scene: '📜 历史的回廊 · 100岁人生总结长卷',
-    image: '🌟',
-    narrative: `第七十一载岁月，整整三千六百九十二个星期，在此刻画上圆满句号。
-从二十九岁那张二十美元的彩票，到布鲁克林的深渊徘徊，再到地中海管网、纳斯达克敲钟、甚至联邦铁窗里的沉思……
-你的一生，是真正超越了平庸、在无数次时间线分叉中由你亲手缔造的史诗。`,
+  // ══════════════════════════════════════════════════════════════════════════════
+  // 【时间线分支 F: 🏛️ 华盛顿暗黑权力幕后线 (Washington Kingmaker)】
+  // ══════════════════════════════════════════════════════════════════════════════
+  'T_KINGMAKER_MID': {
+    id: 'T_KINGMAKER_MID',
+    chapter: 'CH06',
+    ageRange: '50-65岁',
+    timelineName: '🏛️ 华盛顿暗黑权力幕后线',
+    title: '第四幕：两党超级行动委员会·影子造王者',
+    scene: '🏛️ 华盛顿特区大都会俱乐部私密雪茄室',
+    image: '🥃',
+    narrative: `你设立的 Super PAC 政治献金网络已渗透参众两院。
+总统大选前夕，两位党派候选人深夜秘密登门拜访，向你呈递下一届内阁财经首脑的提名名单，只为争取你的一张支票背书。`,
     choices: [
       {
-        text: '📜【阅毕全书·开启人生特稿大结局】(View Final Chronicle)',
-        targetNodeId: null, // 触发终局弹窗
-        impact: { money: 0 },
-        feedback: '全剧终。时代周刊永远铭刻下你的名字。'
+        text: '🖋️【敲定内阁人选与免税特许】将自己信任的门生送入财政部与美联储',
+        targetNodeId: 'T_KINGMAKER_LATE',
+        impact: { money: -30000000, credit: 50, fame: 30 },
+        feedback: '【时间线推进！】法案按你的意志修改。你不再需要登上福布斯，因为你掌控着制定财富规则的人！'
+      }
+    ]
+  },
+
+  'T_KINGMAKER_LATE': {
+    id: 'T_KINGMAKER_LATE',
+    chapter: 'CH09',
+    ageRange: '70-99岁',
+    timelineName: '🏛️ 华盛顿暗黑权力幕后线',
+    title: '第五幕：国会山无冕教皇·百年政治王朝',
+    scene: '📜 弗吉尼亚老宅书房 · 总统亲授总统自由勋章',
+    image: '🏅',
+    narrative: `七十载风云变幻，总统换了十届，而你始终端坐在权力的最中心。
+你的家族成为美利坚不可动摇的深层支柱，历史课本上或许隐藏了你的名字，但每一张美元纸币的流向都在你的意志下运转。`,
+    choices: [
+      {
+        text: '📜【阅毕全书·开启权力王朝特稿大结局】(View Grand Finale)',
+        targetNodeId: null,
+        impact: { fame: 60 },
+        feedback: '全剧终！凡人追逐金钱，大亨追逐权力，而你化身为了权力本身！'
+      }
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // 【时间线分支 G: 🌲 隐士哲人·山野圣贤线 (Zen Philanthropist)】
+  // ══════════════════════════════════════════════════════════════════════════════
+  'T_ZEN_ROOT': {
+    id: 'T_ZEN_ROOT',
+    chapter: 'CH02',
+    ageRange: '32-45岁',
+    timelineName: '🌲 隐士哲人·山野圣贤线',
+    title: '第二幕：太浩湖畔木屋与匿名三千助学金',
+    scene: '🏡 内华达太浩湖畔松林木屋 · 柴火与清茶',
+    image: '🌲',
+    narrative: `你退出了所有投行群聊，拉黑了酒肉朋友。在太浩湖畔买下一座简朴木屋，每天劈柴、阅读、看日出。
+通过匿名信托，你向全球贫困儿童默默资助了上万所乡村图书馆，从未对外透露过你的名字。`,
+    choices: [
+      {
+        text: '🕊️【设立罕见病免版税科研实验室】用千万资金为穷苦绝症患者研发低成本救命药',
+        targetNodeId: 'T_ZEN_LATE',
+        impact: { money: -15000000, happiness: 50, karma: 60, health: 25 },
+        feedback: '【时间线推进！】药价被你打到平民价！世人不知金主是谁，但无数母亲在深夜病房里合十为你默默祈福！'
+      }
+    ]
+  },
+
+  'T_ZEN_LATE': {
+    id: 'T_ZEN_LATE',
+    chapter: 'CH09',
+    ageRange: '70-99岁',
+    timelineName: '🌲 隐士哲人·山野圣贤线',
+    title: '第三幕：安详九十九载·时代精神的无上丰碑',
+    scene: '🌅 太浩湖夕阳下 · 四世同堂与清澈双眼',
+    image: '🕊️',
+    narrative: `九十九岁那年，在儿孙与老友轻柔的歌声中，你平静地躺在摇椅上。
+你名下的银行账户只留下了维持生活的五万美元，而你拯救过的生命、修建的林场与图书馆如璀璨星辰点亮大地。`,
+    choices: [
+      {
+        text: '📜【阅毕全书·开启文明灯塔特稿大结局】(View Grand Finale)',
+        targetNodeId: null,
+        impact: { happiness: 60, karma: 60 },
+        feedback: '全剧终！大音希声，大象无形。你用金钱完成了人类灵魂最壮丽的救赎！'
+      }
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // 【时间线分支 H: 🩸 华尔街嗜血大空头线 (Wall Street Bloodhound)】
+  // ══════════════════════════════════════════════════════════════════════════════
+  'T_SHORT_ROOT': {
+    id: 'T_SHORT_ROOT',
+    chapter: 'CH02',
+    ageRange: '32-45岁',
+    timelineName: '🩸 华尔街嗜血大空头线',
+    title: '第二幕：做空次贷危机·百亿机构轰然爆仓',
+    scene: '📈 曼哈顿对冲基金秘密交易室 · 彭博终端荧光',
+    image: '📉',
+    narrative: `你嗅到了全球房地产次贷与商业银行资产负债表的致命溃疡。
+你调动百倍杠杆建立史诗级看跌期权，与华尔街老牌投行展开你死我活的对手盘博弈。`,
+    choices: [
+      {
+        text: '🩸【满仓核按钮清算】在危机爆发当夜无情按压，收割一亿两千万美金现金',
+        targetNodeId: 'T_SHORT_LATE',
+        impact: { money: 120000000, happiness: -15, fame: 50, credit: -30 },
+        feedback: '【时间线推进！】三家百年投行破产清算！你坐在空荡的交易室里喝着冰威士忌，成为全华尔街谈之色变的“黑天鹅收割机”！'
+      }
+    ]
+  },
+
+  'T_SHORT_LATE': {
+    id: 'T_SHORT_LATE',
+    chapter: 'CH07',
+    ageRange: '60-85岁',
+    timelineName: '🩸 华尔街嗜血大空头线',
+    title: '第三幕：对冲基金终极主宰·华尔街冷血死神',
+    scene: '🏦 瑞士苏黎世湖畔私人城堡',
+    image: '☠️',
+    narrative: `数十年来，无数对冲基金经理在你的做空报告前颤抖爆仓。
+你积累了天文数字的财富，但终日只能生活在私人保镖的重重护卫下。你在冰冷的金钱王座上，见证着资本主义最赤裸的贪婪与毁灭。`,
+    choices: [
+      {
+        text: '📜【阅毕全书·开启冷血空头终局特稿】(View Grand Finale)',
+        targetNodeId: null,
+        impact: { fame: 50 },
+        feedback: '全剧终！华尔街将你视作贪婪与恐惧的具象化化身，你的传说至今仍是对冲基金圈的梦魇！'
+      }
+    ]
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // 【时间线分支 I: 📉 至暗破产·绝境东山再起线 (Fallen Phoenix)】
+  // ══════════════════════════════════════════════════════════════════════════════
+  'T_FALLEN_COMEBACK': {
+    id: 'T_FALLEN_COMEBACK',
+    chapter: 'CH04',
+    ageRange: '45-60岁',
+    timelineName: '📉 至暗破产·绝境东山再起线',
+    title: '第四幕：城中村地下室重装出发·二次崛起',
+    scene: '💻 租来的廉价车库 · 贴满草稿纸的墙壁',
+    image: '🔥',
+    narrative: `经历了婚变背叛与资产清盘，你重新搬进廉租车库。
+你没有沉沦，凭借脑海中数十年的金融实战直觉与代码技能，你带领三名年轻人创立了下一代自动化算力撮合平台。`,
+    choices: [
+      {
+        text: '🚀【斩获首笔三千万风投】五年后再造独角兽，重返福布斯富豪榜',
+        targetNodeId: 'T_AI_SUCCESS',
+        impact: { money: 30000000, wisdom: 50, reputation: 40, credit: 35 },
+        feedback: '【⚡ 史诗级逆风翻盘！】你用无可置疑的铁血战绩向全世界证明：能让你成为亿万富豪的不是运气，而是你本身！'
       }
     ]
   }
@@ -421,7 +492,7 @@ class TimelineBranchDirector {
     this.nodes = TIMELINE_GRAPH_NODES;
     this.currentNodeId = 'CH01_WIN';
     this.unlockedPath = ['CH01_WIN'];
-    this.activeTimelineName = '🌟 命运起点 · 头奖诞生';
+    this.activeTimelineName = '🌟 命运奇点 · 头奖降临';
   }
 
   getCurrentNode() {
@@ -446,7 +517,7 @@ class TimelineBranchDirector {
   reset() {
     this.currentNodeId = 'CH01_WIN';
     this.unlockedPath = ['CH01_WIN'];
-    this.activeTimelineName = '🌟 命运起点 · 头奖诞生';
+    this.activeTimelineName = '🌟 命运奇点 · 头奖降临';
   }
 
   // 获取时间线树状图谱数据 (供 UI 可视化弹窗渲染)
