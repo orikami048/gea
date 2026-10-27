@@ -45,6 +45,9 @@ class FullLifeGameEngine {
     this.currentTab = 'story';
     this.currentMallCategory = 'all';
 
+    // 剧情剧本模式: 'lottery' (中彩票1亿) | 'black_gold' (黑金教皇逆袭)
+    this.activeScenario = 'lottery';
+
     // 广告后悔药备份与黑天鹅对冲
     this.backupSnapshot = null;
     this.currentPendingBearNews = null;
@@ -52,6 +55,14 @@ class FullLifeGameEngine {
     this.initDOM();
     this.renderCurrentTab();
     this.updateHUD();
+  }
+
+  // 获取当前剧本的所有章节
+  getCurrentScenarioChapters() {
+    if (this.activeScenario === 'black_gold' && typeof SCENARIO_BLACK_GOLD_CHAPTERS !== 'undefined') {
+      return SCENARIO_BLACK_GOLD_CHAPTERS;
+    }
+    return STORY_CHAPTERS;
   }
 
   // 计算总净资产 (Total Net Worth)
@@ -228,20 +239,32 @@ class FullLifeGameEngine {
   // 1. 剧情视图渲染
   renderStoryView() {
     const view = document.getElementById('tab-content-area');
-    if (this.storyIndex >= STORY_CHAPTERS.length) {
+    const chapters = this.getCurrentScenarioChapters();
+
+    if (this.storyIndex >= chapters.length) {
       view.innerHTML = `
+        <div class="scenario-switch-bar">
+          <button class="sc-pill ${this.activeScenario === 'lottery' ? 'active' : ''}" data-sc="lottery">🎟️ 剧本一: 中彩票1亿</button>
+          <button class="sc-pill ${this.activeScenario === 'black_gold' ? 'active' : ''}" data-sc="black_gold">🏴‍☠️ 剧本二: 黑金教皇</button>
+        </div>
         <div class="empty-card">
           <div style="font-size:48px;">👑</div>
           <h3>所有核心主线决策已完结</h3>
-          <p>你现在已成为全球顶流富豪。你可以自由在【奢华商城】消费置业、在【资产账本】操作投资，或点击【推进下一年】安享晚年。</p>
+          <p>你现在已成为全球顶流富豪。你可以自由在【华尔街股市】操盘、【奢华商城】消费置业、在【资产账本】操作投资，或点击【推进下一年】安享晚年。</p>
           <button class="btn-action" style="margin-top:14px;" onclick="window.game.showLifeBiographyEndgame()">📜 查阅我的一生·特稿长卷纪念册</button>
         </div>
       `;
+      this.bindScenarioSwitchButtons(view);
       return;
     }
 
-    const ch = STORY_CHAPTERS[this.storyIndex];
+    const ch = chapters[this.storyIndex];
     view.innerHTML = `
+      <div class="scenario-switch-bar">
+        <button class="sc-pill ${this.activeScenario === 'lottery' ? 'active' : ''}" data-sc="lottery">🎟️ 剧本一: 中彩票1亿</button>
+        <button class="sc-pill ${this.activeScenario === 'black_gold' ? 'active' : ''}" data-sc="black_gold">🏴‍☠️ 剧本二: 黑金教皇</button>
+      </div>
+
       <div class="story-panel">
         <div class="story-meta">
           <span class="badge-scene">${ch.scene}</span>
@@ -254,6 +277,8 @@ class FullLifeGameEngine {
       </div>
     `;
 
+    this.bindScenarioSwitchButtons(view);
+
     const box = document.getElementById('story-choices-box');
     ch.choices.forEach(choice => {
       const btn = document.createElement('button');
@@ -264,6 +289,37 @@ class FullLifeGameEngine {
       `;
       btn.addEventListener('click', () => this.handleMakeStoryChoice(choice));
       box.appendChild(btn);
+    });
+  }
+
+  // 绑定剧本切换器按钮事件
+  bindScenarioSwitchButtons(view) {
+    view.querySelectorAll('.sc-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const targetSc = pill.dataset.sc;
+        if (targetSc !== this.activeScenario) {
+          this.activeScenario = targetSc;
+          this.storyIndex = 0;
+          this.lifeEventsLog = [];
+          if (targetSc === 'black_gold') {
+            this.liquidCash = -12500000; // 负债1250万开局
+            this.health = 70;
+            this.wisdom = 65;
+            this.reputation = 20;
+            this.credit = 15;
+            this.showToast('🏴‍☠️ 已切换到【黑金教皇】剧本！初始负债 $1250万，逆袭开始！');
+          } else {
+            this.liquidCash = 20;
+            this.health = 75;
+            this.wisdom = 60;
+            this.reputation = 40;
+            this.credit = 60;
+            this.showToast('🎟️ 已切换到【中彩票1亿】剧本！');
+          }
+          this.updateHUD();
+          this.renderStoryView();
+        }
+      });
     });
   }
 
@@ -282,10 +338,11 @@ class FullLifeGameEngine {
     this.romance = Math.max(0, Math.min(100, this.romance + (choice.impact.happiness > 0 ? 5 : -5)));
 
     // 记录人生历史
+    const curChapters = this.getCurrentScenarioChapters();
     this.lifeEventsLog.push({
       year: this.currentYear,
       age: this.currentAge,
-      title: STORY_CHAPTERS[this.storyIndex].chapterTitle,
+      title: curChapters[this.storyIndex] ? curChapters[this.storyIndex].chapterTitle : '未知章节',
       choice: choice.text,
       feedback: choice.feedback
     });
