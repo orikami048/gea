@@ -62,7 +62,7 @@ const TOOLS = [
       },
       required: ['assetSourceDir', 'cocosProjectDir']
     }
-  }
+  },
   {
     name: 'gea_export_to_three',
     description: 'Directly port and reconstruct extracted game assets into a modern, ready-to-run Three.js + Vite WebGL 3D game project.',
