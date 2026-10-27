@@ -342,9 +342,15 @@ class FullLifeGameEngine {
       node.choices.forEach(choice => {
         const btn = document.createElement('button');
         btn.className = 'choice-item-btn';
+        const hintHtml = choice.hint
+          ? `<div class="choice-subhint">💡 ${choice.hint}</div>`
+          : '';
         btn.innerHTML = `
-          <div class="choice-title">${choice.text}</div>
-          <div class="choice-delta">${choice.impact.money > 0 ? `+$${choice.impact.money.toLocaleString()}` : (choice.impact.money < 0 ? `-$${Math.abs(choice.impact.money).toLocaleString()}` : '')}</div>
+          <div class="choice-main-col">
+            <div class="choice-title">${choice.text}</div>
+            ${hintHtml}
+          </div>
+          <div class="choice-arrow">➔</div>
         `;
         btn.addEventListener('click', () => this.handleMakeTimelineChoice(node, choice));
         box.appendChild(btn);
@@ -410,12 +416,13 @@ class FullLifeGameEngine {
     this.createBackupSnapshot();
 
     // 资金与数值结算
-    this.liquidCash += choice.impact.money || 0;
-    if (choice.impact.fame) this.reputation = Math.max(0, Math.min(100, this.reputation + choice.impact.fame));
-    if (choice.impact.karma) this.credit = Math.max(0, Math.min(100, this.credit + choice.impact.karma));
-    if (choice.impact.romance) this.romance = Math.max(0, Math.min(100, this.romance + choice.impact.romance));
-    if (choice.impact.wisdom) this.wisdom = Math.max(0, Math.min(100, this.wisdom + choice.impact.wisdom));
-    if (choice.impact.health) this.health = Math.max(0, Math.min(100, this.health + choice.impact.health));
+    const impact = choice.impact || {};
+    this.liquidCash += impact.money || 0;
+    if (impact.fame) this.reputation = Math.max(0, Math.min(100, this.reputation + impact.fame));
+    if (impact.karma) this.credit = Math.max(0, Math.min(100, this.credit + impact.karma));
+    if (impact.romance) this.romance = Math.max(0, Math.min(100, this.romance + impact.romance));
+    if (impact.wisdom) this.wisdom = Math.max(0, Math.min(100, this.wisdom + impact.wisdom));
+    if (impact.health) this.health = Math.max(0, Math.min(100, this.health + impact.health));
 
     // 记录人生历史
     this.lifeEventsLog.push({
@@ -443,8 +450,18 @@ class FullLifeGameEngine {
     const prevTimeline = window.timelineDirector.activeTimelineName;
     if (choice.targetNodeId) {
       const nextNode = window.timelineDirector.transitionTo(choice.targetNodeId);
-      if (nextNode && nextNode.timelineName !== prevTimeline) {
-        this.showToast(`⚡【时间线分裂！】你已步入《${nextNode.timelineName}》！`);
+      if (nextNode) {
+        const ageMatch = nextNode.ageRange ? nextNode.ageRange.match(/(\d+)/) : null;
+        if (ageMatch) {
+          const parsedAge = parseInt(ageMatch[1]);
+          if (parsedAge > this.currentAge) {
+            this.currentYear += (parsedAge - this.currentAge);
+            this.currentAge = parsedAge;
+          }
+        }
+        if (nextNode.timelineName !== prevTimeline) {
+          this.showToast(`⚡【时代跨越】${nextNode.ageRange} ·《${nextNode.timelineName}》！`);
+        }
       }
     } else {
       setTimeout(() => this.showLifeBiographyEndgame(), 1200);
