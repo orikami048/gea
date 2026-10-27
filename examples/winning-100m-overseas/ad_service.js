@@ -31,6 +31,15 @@ class AdService {
    * 场景: 投资内幕暴富、悔棋重来避坑、双倍被动收益
    */
   showRewarded(placement, onRewarded, onClosed) {
+    // 👑 9.99 美元终身 VIP 买断特权：直接免看广告，秒发奖励！
+    if (this.isVipLifetime || (window.paypalService && window.paypalService.isVip())) {
+      console.log(`[AdService] VIP Lifetime active: bypassed ad for ${placement}`);
+      if (window.game) window.game.showToast('👑 VIP 终身特权生效，无需看广告，奖励秒到账！');
+      if (onRewarded) onRewarded();
+      if (onClosed) onClosed();
+      return;
+    }
+
     if (this.isAdShowing) return;
     this.isAdShowing = true;
 
@@ -67,6 +76,13 @@ class AdService {
    * 播放插屏广告 (Interstitial Ad) - 年度结算时自然展示
    */
   showInterstitial(onClosed) {
+    // 👑 终身 VIP 买断特权：免除所有插屏转场广告
+    if (this.isVipLifetime || (window.paypalService && window.paypalService.isVip())) {
+      console.log('[AdService] VIP Lifetime active: bypassed interstitial ad');
+      if (onClosed) onClosed();
+      return;
+    }
+
     if (this.isAdShowing) return;
     this.isAdShowing = true;
 

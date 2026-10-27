@@ -958,3 +958,138 @@ body {
   cursor: not-allowed;
   opacity: 0.65;
 }
+
+/* ─── 9.99 美元 VIP 终身买断收单样式 (PayPal Buyout Styles) ─── */
+.buyout-badge-btn {
+  background: linear-gradient(135deg, #eab308, #ca8a04);
+  border: 1px solid #fef08a;
+  color: #0b0f19;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 5px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 0 10px rgba(234, 179, 8, 0.4);
+  transition: all 0.2s;
+}
+
+.buyout-badge-btn:hover {
+  transform: scale(1.05);
+}
+
+.buyout-badge-btn.vip-active {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-color: #a7f3d0;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.buyout-modal {
+  border: 2px solid #eab308 !important;
+  box-shadow: 0 0 45px rgba(234, 179, 8, 0.35) !important;
+}
+
+.buyout-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.vip-crown-icon {
+  font-size: 32px;
+  margin-bottom: 2px;
+  animation: pulseCrown 2s infinite ease-in-out;
+}
+
+@keyframes pulseCrown {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+.buyout-price-tag {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  margin: 6px 0;
+}
+
+.buyout-price-tag .currency {
+  font-size: 18px;
+  font-weight: 800;
+  color: #facc15;
+}
+
+.buyout-price-tag .price-val {
+  font-size: 32px;
+  font-weight: 900;
+  color: #fef08a;
+}
+
+.buyout-price-tag .price-period {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-left: 4px;
+}
+
+.buyout-subdesc {
+  font-size: 11px;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.buyout-perks-list {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.perk-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.perk-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.perk-sub {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.btn-paypal-checkout {
+  width: 100%;
+  background: #ffc439;
+  border: 1px solid #f29f05;
+  color: #003087;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(255, 196, 57, 0.35);
+  transition: all 0.2s;
+}
+
+.btn-paypal-checkout:hover {
+  background: #fbb014;
+  transform: translateY(-1px);
+}

@@ -11,6 +11,7 @@
   <script src="scenario_black_gold.js"></script>
   <script src="historical_events.js"></script>
   <script src="ad_service.js"></script>
+  <script src="paypal_service.js"></script>
 </head>
 <body>
   <div id="app-viewport">
@@ -22,6 +23,9 @@
         <span id="hud-age-week">2026年 · 29岁 (第1周)</span>
       </div>
       <div class="time-actions">
+        <button id="btn-open-buyout" class="buyout-badge-btn" title="9.99美元永久买断免广告与特权">
+          👑 <span>$9.99 买断</span>
+        </button>
         <button id="btn-next-week" class="time-btn" title="推进一周">⏩ 下一周</button>
         <button id="btn-next-year" class="time-btn highlight" title="快进一年">⏭️ 快进一年</button>
       </div>
@@ -182,6 +186,54 @@
         <h3 id="ad-title" style="color:#facc15; margin:8px 0;">🎬 海外激励广告播放中...</h3>
         <p style="font-size:11px; color:#94a3b8;">高单价欧美休闲游戏投放中</p>
         <div class="ad-timer">剩余: <span id="ad-countdown">4</span> 秒</div>
+      </div>
+    </div>
+
+    <!-- 9.99 美元 VIP 终身买断收单弹窗 (PayPal Checkout Modal) -->
+    <div id="modal-buyout-paypal" class="modal-layer hidden">
+      <div class="modal-card buyout-modal">
+        <div class="buyout-header">
+          <div class="vip-crown-icon">👑</div>
+          <h2 style="color:#facc15; margin:6px 0; font-size:17px;">VIP 终身大亨买断特权</h2>
+          <div class="buyout-price-tag">
+            <span class="currency">$</span><span class="price-val">9.99</span>
+            <span class="price-period">/ 终身一次性买断 (Lifetime Pass)</span>
+          </div>
+          <p id="buyout-status-desc" class="buyout-subdesc">
+            只需一次性支付 $9.99，永久解锁尊荣体验，款项直结创作者 PayPal。
+          </p>
+        </div>
+
+        <div class="buyout-perks-list">
+          <div class="perk-row">
+            <span class="perk-icon">🚫</span>
+            <div><b>永久移除全部广告</b><div class="perk-sub">商业内幕、救市对冲、离线收益 0 秒秒发，免除所有插屏与视频广告</div></div>
+          </div>
+          <div class="perk-row">
+            <span class="perk-icon">💰</span>
+            <div><b>+$10,000,000 额外启动巨资</b><div class="perk-sub">购买即刻到账一千万美元流动现金，开局直接起飞</div></div>
+          </div>
+          <div class="perk-row">
+            <span class="perk-icon">📜</span>
+            <div><b>无限次人生倒带 (后悔药)</b><div class="perk-sub">任何失误决策随时无损撤销，尽享资本大佬上帝视角</div></div>
+          </div>
+          <div class="perk-row">
+            <span class="perk-icon">🌟</span>
+            <div><b>商业信誉与声望 +25</b><div class="perk-sub">尊贵黄金 VIP 头衔，华尔街与比弗利名流高规格礼遇</div></div>
+          </div>
+        </div>
+
+        <div id="buyout-actions-box">
+          <!-- PayPal 官方智能按钮挂载点 (当配置有效 Client-ID 时自动渲染) -->
+          <div id="paypal-button-container" style="margin: 10px 0 6px;"></div>
+
+          <!-- 便捷沙盒/一键演示支付通道 -->
+          <button id="btn-simulate-paypal" class="btn-paypal-checkout">
+            <span>💳 PayPal 快捷安全结算 ($9.99)</span>
+          </button>
+        </div>
+
+        <button id="btn-close-buyout" class="btn-skip-treat" style="margin-top:10px;">稍后再说，先体验游戏 ➔</button>
       </div>
     </div>
 
