@@ -159,6 +159,38 @@ class FullLifeGameEngine {
       });
     }
 
+    // 运行自动化时间线遍历与连通性测试
+    const btnRunTest = document.getElementById('btn-run-timeline-test');
+    if (btnRunTest) {
+      btnRunTest.addEventListener('click', () => {
+        this.runTimelineGraphTestSuite();
+      });
+    }
+
+    // 重置时间线至初始奇点
+    const btnResetStart = document.getElementById('btn-reset-timeline-start');
+    if (btnResetStart) {
+      btnResetStart.addEventListener('click', () => {
+        if (window.timelineDirector) {
+          window.timelineDirector.reset();
+          this.updateHUD();
+          this.renderStoryView();
+          this.showToast('🔄 已重置命运时间线回奇点：第1幕·喜中一亿美元');
+          this.showTimelineTreeModal(this.currentTreeFilter || 'all');
+        }
+      });
+    }
+
+    // 过滤器按钮切换 (All / Main / Sub)
+    document.querySelectorAll('.tree-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tree-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.currentTreeFilter = btn.dataset.filter;
+        this.showTimelineTreeModal(btn.dataset.filter);
+      });
+    });
+
     // 美联储救市对冲广告
     document.getElementById('btn-bailout-ad').addEventListener('click', () => {
       if (this.currentPendingBearNews) {
@@ -410,8 +442,50 @@ class FullLifeGameEngine {
     }
   }
 
-  // 展开时间线分支树可视化弹窗
-  showTimelineTreeModal() {
+  // 运行时间线全图遍历自动化自测套件
+  runTimelineGraphTestSuite() {
+    if (!window.timelineDirector) return;
+    const reportBox = document.getElementById('timeline-test-report');
+    if (!reportBox) return;
+
+    const res = window.timelineDirector.runFullGraphSelfTest();
+    reportBox.classList.remove('hidden');
+
+    const statusBadge = res.isAllValid
+      ? '<span style="color:#10b981; font-weight:800;">✅ 全图 100% 连通完整无断链 (Self-Test Passed)</span>'
+      : '<span style="color:#ef4444; font-weight:800;">❌ 发现断链异常 (Broken Links Detected)</span>';
+
+    reportBox.innerHTML = `
+      <div style="font-size:12px; font-weight:800; margin-bottom:6px; border-bottom:1px solid #1e293b; padding-bottom:4px;">
+        ${statusBadge}
+      </div>
+      <div class="test-metric-row">
+        <span>📦 总节点数 (Total Nodes):</span>
+        <b style="color:#38bdf8;">${res.totalNodes} 个</b>
+      </div>
+      <div class="test-metric-row">
+        <span>🌐 涵盖时间线数 (Timelines):</span>
+        <b style="color:#facc15;">${res.timelinesCount} 条 (10主线+12子分支)</b>
+      </div>
+      <div class="test-metric-row">
+        <span>🔗 有效分支跃迁关系 (Valid Transitions):</span>
+        <b style="color:#10b981;">${res.validTransitions} 处</b>
+      </div>
+      <div class="test-metric-row">
+        <span>⚠️ 孤立/断链数 (Broken Links):</span>
+        <b style="color:${res.brokenLinks.length > 0 ? '#ef4444' : '#94a3b8'};">${res.brokenLinks.length} 处</b>
+      </div>
+      <div style="font-size:10px; color:#94a3b8; margin-top:4px;">
+        💡 提示：点击下方节点卡片上的【⚡ 瞬移测试】可即时传送验证对应剧本与数值联动。
+      </div>
+    `;
+
+    this.showToast(res.isAllValid ? '🧪 遍历自测完成：全图22个节点与12个子分支100%连通！' : '⚠️ 自测发现断链，请查看报告！');
+  }
+
+  // 展开时间线分支树可视化与沙盒测试弹窗
+  showTimelineTreeModal(filter = 'all') {
+    this.currentTreeFilter = filter;
     const modal = document.getElementById('modal-timeline-tree');
     document.getElementById('tree-active-name').innerText = window.timelineDirector.activeTimelineName;
 
@@ -419,7 +493,17 @@ class FullLifeGameEngine {
     container.innerHTML = '';
 
     const nodesData = window.timelineDirector.getGraphVisualizationData();
-    nodesData.forEach(item => {
+    const countSpan = document.getElementById('count-all-nodes');
+    if (countSpan) countSpan.innerText = nodesData.length;
+
+    let filtered = nodesData;
+    if (filter === 'main') {
+      filtered = nodesData.filter(n => !n.isSubTimeline);
+    } else if (filter === 'sub') {
+      filtered = nodesData.filter(n => n.isSubTimeline);
+    }
+
+    filtered.forEach(item => {
       const card = document.createElement('div');
       let statusClass = 'locked';
       let badgeText = '🔒 平行世界未走过的分支';
@@ -432,17 +516,46 @@ class FullLifeGameEngine {
         badgeText = '✅ 已经历的历史节点';
       }
 
+      const subTagHtml = item.isSubTimeline
+        ? '<span class="sub-timeline-tag">🧬 嵌套子分支 (分支的分支)</span>'
+        : '<span style="font-size:9px; color:#94a3b8; margin-left:6px;">🏛️ 主时间线</span>';
+
       card.className = `tree-node-card ${statusClass}`;
       card.innerHTML = `
-        <span class="node-timeline-badge ${statusClass}">${badgeText}</span>
-        <div class="node-title-row">
-          <span>${item.chapter} · ${item.title}</span>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="node-timeline-badge ${statusClass}">${badgeText}</span>
+          ${subTagHtml}
+        </div>
+        <div class="node-title-row" style="margin-top:4px;">
+          <span>${item.image || '🧭'} ${item.chapter} · ${item.title}</span>
           <span style="color:#94a3b8; font-size:11px;">${item.age}</span>
         </div>
         <div style="font-size:11px; color:#38bdf8; margin-top:4px;">
           所属时间线: <b>${item.timeline}</b>
         </div>
+        <div style="font-size:10px; color:#94a3b8; margin-top:2px;">
+          场景: <i>${item.scene || '未知场景'}</i> · 决策选项: <b>${item.choicesCount}</b> 个
+        </div>
+        <div class="node-action-bar">
+          <span style="font-size:10px; color:#cbd5e1;">节点ID: <code>${item.id}</code></span>
+          <button class="btn-teleport-node" data-node-id="${item.id}">
+            ⚡ 瞬移测试 (Jump & Test)
+          </button>
+        </div>
       `;
+
+      // 绑定节点一键瞬移测试按钮
+      const teleportBtn = card.querySelector('.btn-teleport-node');
+      if (teleportBtn) {
+        teleportBtn.addEventListener('click', () => {
+          window.timelineDirector.jumpToNodeForTest(item.id);
+          this.updateHUD();
+          this.renderStoryView();
+          this.showToast(`🚀 已瞬移至节点【${item.title}】(${item.timeline})`);
+          this.showTimelineTreeModal(this.currentTreeFilter || 'all');
+        });
+      }
+
       container.appendChild(card);
     });
 

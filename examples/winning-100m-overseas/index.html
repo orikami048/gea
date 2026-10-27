@@ -238,20 +238,40 @@
       </div>
     </div>
 
-    <!-- 多时间线命运分支树全景图弹窗 (Timeline Branching Graph Modal) -->
+    <!-- 多时间线命运分支树全景图弹窗与沙盒自测套件 (Timeline Branching Graph Modal & Testing Suite) -->
     <div id="modal-timeline-tree" class="modal-layer hidden">
       <div class="modal-card timeline-tree-modal">
         <div class="tree-header">
-          <span class="tree-tag">10大时代 · 树状分支命运图谱</span>
-          <h2 style="color:#facc15; margin:6px 0; font-size:16px;">🌲 命运时间线决策树 (Timeline Graph)</h2>
+          <span class="tree-tag">10大主时间线 · 12嵌套子分支 · 树状分支命运图谱</span>
+          <h2 style="color:#facc15; margin:6px 0; font-size:16px;">🌲 命运时间线总览 & 自动化测试套件 (Timeline Suite)</h2>
           <div style="font-size:11px; color:#cbd5e1;">当前活跃时间线: <b id="tree-active-name" style="color:#38bdf8;">🌟 命运起点</b></div>
+        </div>
+
+        <!-- 测试沙盒与图谱控制栏 -->
+        <div class="tree-test-toolbar">
+          <button id="btn-run-timeline-test" class="btn-test-run">
+            🧪 运行自动化遍历全测 (Run Auto Traversal Test)
+          </button>
+          <button id="btn-reset-timeline-start" class="btn-test-reset" title="重置回初始节点">
+            🔄 重置起点
+          </button>
+        </div>
+
+        <!-- 自动化测试报告面板 (点击自测后展示) -->
+        <div id="timeline-test-report" class="test-report-box hidden"></div>
+
+        <!-- 节点列表过滤与统计栏 -->
+        <div class="tree-filter-bar">
+          <button class="tree-filter-btn active" data-filter="all">全部节点 (<span id="count-all-nodes">0</span>)</button>
+          <button class="tree-filter-btn" data-filter="main">🏛️ 10大主线</button>
+          <button class="tree-filter-btn" data-filter="sub">🧬 12嵌套子分支</button>
         </div>
 
         <div class="timeline-nodes-scroll" id="timeline-tree-container">
           <!-- 动态渲染当前节点、已走通节点、与锁定的平行世界时间线分支 -->
         </div>
 
-        <button id="btn-close-timeline-tree" class="btn-confirm-action" style="margin-top:12px;">返回剧情 (Return ➔)</button>
+        <button id="btn-close-timeline-tree" class="btn-confirm-action" style="margin-top:10px;">返回剧情 (Return ➔)</button>
       </div>
     </div>
 
